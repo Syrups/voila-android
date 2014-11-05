@@ -90,6 +90,7 @@ public class FriendsFragment extends DialogFragment {
         }
     }
 
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -101,7 +102,7 @@ public class FriendsFragment extends DialogFragment {
 
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_fragment_friends, null);
         adapter = new FriendsArrayApdater(getActivity(), R.layout.list_item_friends, this.users);
-        
+
         mUsersList = ButterKnife.findById(v, android.R.id.list);
         mUsersList.setAdapter(adapter);
         mUsersList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -208,5 +209,12 @@ public class FriendsFragment extends DialogFragment {
     public interface FrienSelectedListner {
         // TODO: Update argument type and name
         public void onPropositionSent(JsonElement JsonElement);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle arg0) {
+        super.onActivityCreated(arg0);
+        getDialog().getWindow()
+                .getAttributes().windowAnimations = R.style.DialogAnimation;
     }
 }

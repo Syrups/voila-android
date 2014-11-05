@@ -1,31 +1,50 @@
 package com.tenveux.theglenn.tenveux.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.FragmentTransaction;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.facebook.Request;
+import com.facebook.Session;
+import com.facebook.model.GraphUser;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tenveux.theglenn.tenveux.ApiController;
 import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.R;
+import com.tenveux.theglenn.tenveux.UserPreferences;
 import com.tenveux.theglenn.tenveux.Utils;
 import com.tenveux.theglenn.tenveux.activities.PropositionsActivity;
+import com.tenveux.theglenn.tenveux.apimodel.CreateUserResponse;
 import com.tenveux.theglenn.tenveux.apimodel.Proposition;
+import com.tenveux.theglenn.tenveux.widget.FriendsArrayApdater;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -120,7 +139,7 @@ public class PropositionFragment extends Fragment {
         // Sender informations
         String name = proposition.getSenderName();
         String tenveux = getResources().getString(R.string.ten_veux);
-        Spanned phrase = Html.fromHtml("<b>" + name + "</b> : " + "<i>" +  tenveux + "</i>") ;
+        Spanned phrase = Html.fromHtml("<b>" + name + "</b> : " + "<i>" + tenveux + "</i>");
 
         text.setText(phrase);
 
@@ -194,10 +213,12 @@ public class PropositionFragment extends Fragment {
 
     @OnClick(R.id.button_take)
     void setmTakeButton() {
+
         ApplicationController.api().takePropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
                 Log.d("take", response.getBody().toString());
+                showDialog();
                 ((PropositionsActivity) getActivity()).removeProposition(proposition);
             }
 
@@ -208,5 +229,110 @@ public class PropositionFragment extends Fragment {
             }
         });
     }
+
+
+    void showDialog() {
+        // Create the fragment and show it as a dialog.
+        DialogFragment newFragment = DialogProposition.newInstance();
+        newFragment.show(getFragmentManager(), "dialog");
+    }
+
+    void reSend(){
+        final Session session = Session.getActiveSession();
+
+        if (session != null) {
+            Log.d("sessiion", session.getState().isOpened() + "");
+            if (session.getState().isOpened()) {
+                //TODO : SHOW FRIEND LIST !!!!!
+                Log.d("users", "launch");
+
+                Request.newMyFriendsRequest(session, new Request.GraphUserListCallback() {
+                    @Override
+                    public void onCompleted(List<GraphUser> users, com.facebook.Response response) {
+
+                        Log.d("users", "done");
+                        for (GraphUser u : users) {
+                            Log.d("users", u.getName());
+                        }
+                        // DialogFragment.show() will take care of adding the fragment
+                        // in a transaction.  We also want to remove any currently showing
+                        // dialog, so make our own transaction and take care of that here.
+                        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                        Dial prev = getsu().findFragmentByTag("dialog");
+                        if (prev != null) {
+                            ft.remove(prev);
+                        }
+
+                        ft.addToBackStack(null);
+
+                        // Create and show the dialog.
+                        FriendsFragment newFragment = FriendsFragment.newInstance(users, imagetoSend);
+                        newFragment.show(ft, "dialog");
+                    }
+                }).executeAsync();
+            }
+        }
+    }
+
+    public static class DialogProposition extends DialogFragment {
+
+        @InjectView(R.id.button_ok)
+        Button buttonOk;
+
+        @InjectView(R.id.button_resend)
+        Button buttonRe;
+
+        static DialogProposition newInstance() {
+            return new DialogProposition();
+        }
+
+       /* @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View v = inflater.inflate(R.layout.fragment_dialog_jaipris, container, false);
+            //View tv = v.findViewById(R.id.text);
+            //((TextView)tv).setText("This is an instance of MyDialogFragment");
+            return v;
+        }*/
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            View v = getActivity().getLayoutInflater().inflate(R.layout.fragment_dialog_jaipris, null);
+
+            ButterKnife.inject(v);
+
+            // creating the fullscreen dialog
+            final Dialog dialog = new Dialog(getActivity());
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(v);
+            Drawable d = new ColorDrawable(Color.BLACK);
+            d.setAlpha(130);
+            dialog.getWindow().setBackgroundDrawable(d);
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+
+            return dialog;
+        }
+
+        @OnClick(R.id.button_ok)
+        void setButtonOk() {
+            this.dismiss();
+        }
+
+        @OnClick(R.id.button_resend)
+        void setButtonRe() {
+         this.dismiss();
+         //reSend();
+        }
+
+        @Override
+        public void onActivityCreated(Bundle arg0) {
+            super.onActivityCreated(arg0);
+            getDialog().getWindow()
+                    .getAttributes().windowAnimations = R.style.DialogAnimation;
+        }
+    }
+
 
 }
