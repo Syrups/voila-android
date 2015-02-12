@@ -3,7 +3,7 @@ package com.tenveux.theglenn.tenveux;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.facebook.model.GraphUser;
+import com.tenveux.theglenn.tenveux.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,35 +18,15 @@ import java.util.ArrayList;
  */
 public class Utils {
 
-    public static JSONObject JSONIfyUser(GraphUser user){
-        JSONObject userJSON = new JSONObject();
-        try {
-            userJSON.put("name", user.getName());
-            userJSON.put("id", user.getId());
-
-
-            // Example: access via key for array (languages)
-            // - requires user_likes permission
-            /*JSONArray languages = (JSONArray) user.getProperty("languages");
-            if (languages.length() > 0) {
-                ArrayList<String> languageNames = new ArrayList<String>();
-                for (int i = 0; i < languages.length(); i++) {
-                    JSONObject language = languages.optJSONObject(i);
-                    // Add the language name to a list. Use JSON
-                    // methods to get access to the name field.
-                    languageNames.add(language.optString("name"));
-                }
-                //userJSON.
-            }*/
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return userJSON;
-
+    public static String getFacebookPixURL(User user) {
+       return "https://graph.facebook.com/" + user.getId() + "/picture?type=large" ;
     }
 
-    public static String getFacebookPixURL(GraphUser user) {
-       return "https://graph.facebook.com/" + user.getId() + "/picture?type=large" ;
+    public static String getMediaAvatarUrl(User user) {
+        return "https://graph.facebook.com/" + user.getId() + "/picture?type=large" ;
+    }
+
+    public static String getPropositionMediaUrl(User user) {
+        return "https://graph.facebook.com/" + user.getId() + "/picture?type=large" ;
     }
 }

@@ -1,27 +1,11 @@
 package com.tenveux.theglenn.tenveux;
 
 import android.app.Application;
-import android.graphics.Bitmap;
-import android.text.TextUtils;
-import android.util.Base64;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.Volley;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import com.tenveux.theglenn.tenveux.network.ApiController;
+import com.tenveux.theglenn.tenveux.network.OffApiController;
+import com.tenveux.theglenn.tenveux.network.apis.ApiUsers;
+import com.tenveux.theglenn.tenveux.network.client.MockClient;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -45,6 +29,8 @@ public class ApplicationController extends Application {
     private static ApplicationController sInstance;
     private ApiController service;
     private OffApiController offService;
+    private ApiUsers userService;
+
     private boolean isUserLoggedIn;
     private String userToken;
 
@@ -59,6 +45,7 @@ public class ApplicationController extends Application {
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
             @Override
             public void intercept(RequestFacade request) {
+
                 if (isUserLoggedIn()) {
                     request.addHeader("X-Authorization-Token", userToken);
                 }
@@ -68,8 +55,11 @@ public class ApplicationController extends Application {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setRequestInterceptor(requestInterceptor)
                 .setEndpoint(ApiController.BASE_URL)
+                .setClient(new MockClient())
                 .build();
-        service = restAdapter.create(ApiController.class);
+        //service = restAdapter.create(ApiController.class);
+        userService = restAdapter.create(ApiUsers.class);
+
 
         RestAdapter offAdapter = new RestAdapter.Builder()
                 .setRequestInterceptor(requestInterceptor)
@@ -96,9 +86,14 @@ public class ApplicationController extends Application {
         return sInstance;
     }
 
+    public static ApiUsers userApi() {
+        return sInstance.userService;
+    }
     public static ApiController api() {
         return sInstance.service;
     }
+
+
     public static OffApiController offApi() {
         return sInstance.offService;
     }

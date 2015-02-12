@@ -2,8 +2,8 @@ package com.tenveux.theglenn.tenveux.activities;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,8 +13,8 @@ import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.DepthPageTransformer;
 import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.UserPreferences;
-import com.tenveux.theglenn.tenveux.apimodel.CreateUserResponse;
-import com.tenveux.theglenn.tenveux.apimodel.Proposition;
+import com.tenveux.theglenn.tenveux.models.Proposition;
+import com.tenveux.theglenn.tenveux.models.User;
 import com.tenveux.theglenn.tenveux.widget.PropositionPagerAdapter;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class PropositionsActivity extends FragmentActivity {
+public class PropositionsActivity extends ActionBarActivity {
 
 
     @InjectView(R.id.pager)
@@ -39,13 +39,16 @@ public class PropositionsActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_propositions);
         ButterKnife.inject(this);
-        this.getActionBar().setDisplayShowTitleEnabled(false);
 
-        CreateUserResponse u = UserPreferences.getSessionUser();
+        this.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        User u = UserPreferences.getSessionUser();
 
         mViewPager.setPageTransformer(true, new DepthPageTransformer());
 
-        ApplicationController.api().getPendingPropostion(u.getId(), new Callback<List<Proposition>>() {
+        ApplicationController.userApi().getPendingProposition(u.getId(), new Callback<List<Proposition>>() {
             @Override
             public void success(List<Proposition> propositions, Response response) {
 

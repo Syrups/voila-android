@@ -7,31 +7,29 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.facebook.model.GraphUser;
-import com.pkmmte.view.CircularImageView;
-import com.squareup.picasso.Picasso;
 import com.tenveux.theglenn.tenveux.R;
-import com.tenveux.theglenn.tenveux.Utils;
+import com.tenveux.theglenn.tenveux.models.User;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by theGlenn on 18/10/2014.
  */
 public class FriendsArrayApdater extends ArrayAdapter {
 
-    List<GraphUser> mUsers;
+    List<User> mUsers;
     Context mContext;
     int layoutResourceId;
     LayoutInflater inflater;
 
-    public FriendsArrayApdater(Context context, int resource, List<GraphUser> users) {
+    public FriendsArrayApdater(Context context, int resource, List<User> users) {
         super(context, resource);
 
-        mUsers = users;
+       mUsers = users;
         mContext = context;
         layoutResourceId = resource;
         inflater = LayoutInflater.from(getContext());
@@ -44,7 +42,7 @@ public class FriendsArrayApdater extends ArrayAdapter {
     }
 
     @Override
-    public GraphUser getItem(int position) {
+    public User getItem(int position) {
         return mUsers.get(position);
     }
 
@@ -60,10 +58,11 @@ public class FriendsArrayApdater extends ArrayAdapter {
             view.setTag(holder);
         }
 
-        GraphUser user = getItem(position);
+        User user = getItem(position);
+
         String name = user.getName();
-        String fName = user.getFirstName();
-        String lName = user.getLastName();
+        String fName = user.getName();
+        String lName = user.getName();
 
         if (user != null) {
 
@@ -73,13 +72,13 @@ public class FriendsArrayApdater extends ArrayAdapter {
                 lName = arrs[1];
             }
 
-
-            Picasso.with(getContext())
+            //TODO : uncoment
+            /*Picasso.with(getContext())
                     .load(Utils.getFacebookPixURL(user))
                     .resize(50, 50)
                     .centerCrop()
                             //.transform(new CircleTransformation())
-                    .into(holder.avatar);
+                    .into(holder.avatar);*/
 
             holder.t1.setText(fName);
             holder.t2.setText(lName);
@@ -91,7 +90,7 @@ public class FriendsArrayApdater extends ArrayAdapter {
 
     static class ViewHolder {
         @InjectView(R.id.avatar)
-        CircularImageView avatar;
+        CircleImageView avatar;
         @InjectView(android.R.id.text1)
         TextView t1;
         @InjectView(android.R.id.text2)

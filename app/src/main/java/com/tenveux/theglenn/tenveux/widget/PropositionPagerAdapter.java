@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
-import com.tenveux.theglenn.tenveux.apimodel.Proposition;
+import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.fragment.PropositionFragment;
 
 import java.util.List;

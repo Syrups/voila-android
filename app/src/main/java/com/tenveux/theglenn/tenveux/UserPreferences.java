@@ -4,9 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
-import com.tenveux.theglenn.tenveux.apimodel.CreateUserResponse;
+import com.tenveux.theglenn.tenveux.models.User;
 
 /**
  * Created by theGlenn on 13/10/2014.
@@ -16,6 +15,7 @@ public class UserPreferences {
     public static final String PREFS_NAME = "UserPrefs";
     private static Gson gson = new Gson();
     private static Context context = ApplicationController.getInstance().getApplicationContext();
+    public static final String EMPTY = "{error : 1}";
 
 
     public String getPrefrence() {
@@ -27,17 +27,18 @@ public class UserPreferences {
         return user;
     }
 
-    public static CreateUserResponse getSessionUser() {
+    public static User getSessionUser() {
         // Restore preferences
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         String user = settings.getString("User", "{error : 1}");
 
         Log.i("getting", user);
-        return gson.fromJson(user, CreateUserResponse.class);
+
+        return user.equals(EMPTY) ? null : gson.fromJson(user, User.class);
     }
 
 
-    public static void savePreference(CreateUserResponse user) {
+    public static void savePreference(User user) {
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("User", gson.toJson(user));
@@ -48,7 +49,7 @@ public class UserPreferences {
         editor.apply();
     }
 
-    public static void savePreference(CreateUserResponse user, SharedPreferences.OnSharedPreferenceChangeListener l) {
+    public static void savePreference(User user, SharedPreferences.OnSharedPreferenceChangeListener l) {
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("User", gson.toJson(user));

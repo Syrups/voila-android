@@ -2,40 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tenveux.theglenn.tenveux">
 
-    <application
-        android:name=".ApplicationController"
-        android:allowBackup="true"
-        android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id" />
-
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.TranslucentActionBar"></activity>
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="adjustResize|stateVisible">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name="com.facebook.LoginActivity" />
-        <activity
-
-            android:theme="@style/Theme.TranslucentActionBar.ActionBar.Overlay"
-            android:name=".activities.PropositionsActivity"
-            android:label="@string/title_activity_propositions"></activity>
-    </application>
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -46,5 +12,48 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".ApplicationController"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name">
+
+        <activity
+            android:name=".activities.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".activities.PropositionsActivity"
+            android:label="@string/title_activity_propositions"
+            android:theme="@style/TenveuxTheme.TranslucentActionBar.Overlay" />
+
+        <activity
+            android:name=".activities.home.SignIn"
+            android:label="@string/title_activity_sign_in"
+            android:theme="@style/TenveuxTheme.TranslucentActionBar.Overlay"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
+
+        <activity
+            android:name=".activities.home.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/TenveuxTheme.TranslucentActionBar.Overlay"
+            android:windowSoftInputMode="stateVisible|adjustPan"/>
+
+        <activity
+            android:name=".activities.home.HomeActivity"
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 
 </manifest>
