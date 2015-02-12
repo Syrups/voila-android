@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_id">1481862255414323</string> <!-- 1495070424081981 -->
     <string name="app_name">Tenveux</string>
     <string name="title_section1">Profile</string>
     <string name="title_section2">Amis</string>
@@ -13,7 +12,8 @@
     <string name="title_activity_propositions">PropositionsActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="ten_veux">"T\'en veux ?"</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_sign_in">SignIn</string>
 
 </resources>

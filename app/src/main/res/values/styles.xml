@@ -1,21 +1,38 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light">
-        <!-- Customize your theme here. -->
+    <style name="Tenveux.Widget.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+
+        <item name="android:background" tools:ignore="NewApi">@color/red</item>
+        <item name="background">@color/red</item>
+
+        <item name="android:colorControlNormal" tools:ignore="NewApi">
+            @color/wallet_holo_blue_light
+        </item>
+
     </style>
 
-    <style name="Theme.TranslucentActionBar" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/Widget.ActionBar</item>
+    <style name="Tenveux.Widget.ActionBar.NOActionBar" >
+
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+
     </style>
 
-    <style name="Theme.TranslucentActionBar.ActionBar" />
+    <!-- ACTION BAR STYLES -->
+    <style name="Tenveux.Widget.ActionBar.overlay">
 
-    <style name="Theme.TranslucentActionBar.ActionBar.Overlay">
-        <item name="android:actionBarStyle">@style/Widget.ActionBar.Transparent</item>
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBarOverlay">true</item>
+
+        <item name="colorPrimary">@android:color/transparent</item>
+
     </style>
+
+
+    <style name="Tenveux.Widget.ActionBar.Transparent">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
 
     <style name="ButtonBigStyle">
         <item name="fontPath">fonts/SansitaOne.ttf</item>

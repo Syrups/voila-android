@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Widget.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">#000000</item>
+
+    <style name="TenveuxTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/Tenveux.Widget.ActionBar
+        </item>
+        <item name="actionBarStyle">@style/Tenveux.Widget.ActionBar</item>
     </style>
 
-    <style name="Widget.ActionBar.Transparent">
-        <item name="android:background">@android:color/transparent</item>
+    <style name="TenveuxTheme.TranslucentActionBar">
+        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/Tenveux.Widget.ActionBar</item>
+    </style>
+
+    <style name="TenveuxTheme.TranslucentActionBar.ActionBar" />
+
+    <style name="TenveuxTheme.TranslucentActionBar.Overlay" parent="@style/Theme.AppCompat">
+        <item name="android:windowActionBarOverlay" tools:ignore="NewApi">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <item name="colorControlNormal">@color/wallet_holo_blue_light</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+
+        <item name="android:displayOptions" tools:ignore="NewApi">showHome|useLogo</item>
+        <item name="displayOptions">showHome|useLogo</item>
 
     </style>
+
+    <style name="CustomActionBarTheme" parent="@style/Theme.AppCompat">
+
+        <item name="android:windowActionBarOverlay" tools:ignore="NewApi">true</item>
+        <item name="windowActionBarOverlay">true</item>
+
+        <item name="colorPrimary">@android:color/transparent</item>
+    </style>
+
+    <style name="MainToolBar" parent="Theme.AppCompat">
+        <item name="colorPrimary">#e6202229</item>
+        <item name="colorPrimaryDark">#e6202229</item>
+        <item name="colorAccent">#e6202229</item>
+    </style>
+
+
 </resources>
