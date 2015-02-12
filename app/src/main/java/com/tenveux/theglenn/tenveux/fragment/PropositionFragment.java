@@ -2,7 +2,6 @@ package com.tenveux.theglenn.tenveux.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -13,38 +12,26 @@ import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.facebook.Request;
-import com.facebook.Session;
-import com.facebook.model.GraphUser;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.pkmmte.view.CircularImageView;
+import de.hdodenhof.circleimageview.CircleImageView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.tenveux.theglenn.tenveux.ApiController;
+import com.tenveux.theglenn.tenveux.network.ApiController;
 import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.R;
-import com.tenveux.theglenn.tenveux.UserPreferences;
-import com.tenveux.theglenn.tenveux.Utils;
 import com.tenveux.theglenn.tenveux.activities.PropositionsActivity;
-import com.tenveux.theglenn.tenveux.apimodel.CreateUserResponse;
-import com.tenveux.theglenn.tenveux.apimodel.Proposition;
-import com.tenveux.theglenn.tenveux.widget.FriendsArrayApdater;
+import com.tenveux.theglenn.tenveux.models.Proposition;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -72,7 +59,7 @@ public class PropositionFragment extends Fragment {
     ImageView mImage;
 
     @InjectView(R.id.avatar)
-    CircularImageView mAvatar;
+    CircleImageView mAvatar;
 
     Proposition proposition;
 
@@ -237,7 +224,7 @@ public class PropositionFragment extends Fragment {
         newFragment.show(getFragmentManager(), "dialog");
     }
 
-    void reSend(){
+    /*void reSend(){
         final Session session = Session.getActiveSession();
 
         if (session != null) {
@@ -258,7 +245,8 @@ public class PropositionFragment extends Fragment {
                         // in a transaction.  We also want to remove any currently showing
                         // dialog, so make our own transaction and take care of that here.
                         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-                        Dial prev = getsu().findFragmentByTag("dialog");
+
+                        Dial prev = getFragmentManager().findFragmentByTag("dialog");
                         if (prev != null) {
                             ft.remove(prev);
                         }
@@ -272,7 +260,7 @@ public class PropositionFragment extends Fragment {
                 }).executeAsync();
             }
         }
-    }
+    }*/
 
     public static class DialogProposition extends DialogFragment {
 

@@ -2,11 +2,11 @@ package com.tenveux.theglenn.tenveux.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
@@ -15,20 +15,21 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.facebook.model.GraphUser;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.UserPreferences;
-import com.tenveux.theglenn.tenveux.apimodel.CreateUserResponse;
-import com.tenveux.theglenn.tenveux.apimodel.Proposition;
+import com.tenveux.theglenn.tenveux.models.CreateUserResponse;
+import com.tenveux.theglenn.tenveux.models.Proposition;
+import com.tenveux.theglenn.tenveux.models.User;
 import com.tenveux.theglenn.tenveux.widget.FriendsArrayApdater;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -38,7 +39,7 @@ import retrofit.mime.TypedFile;
  * A fragment representing a list of Items.
  * <p/>
  * <p/>
- * Activities containing this fragment MUST implement the {@link com.tenveux.theglenn.tenveux.MainActivity}
+ * Activities containing this fragment MUST implement the {@link com.tenveux.theglenn.tenveux.activities.MainActivity}
  * interface.
  */
 public class FriendsFragment extends DialogFragment {
@@ -49,14 +50,16 @@ public class FriendsFragment extends DialogFragment {
 
     // TODO: Rename and change types of parameters
     private FriendsArrayApdater adapter;
-    public List<GraphUser> users;
+    public List<User> users;
     TypedFile image;
 
     private FrienSelectedListner mListener;
     private ListView mUsersList;
 
+    private Proposition mProposition = new Proposition();
+
     // TODO: Rename and change types of parameters
-    public static FriendsFragment newInstance(List<GraphUser> users, TypedFile image) {
+    public static FriendsFragment newInstance(List<User> users, TypedFile image) {
         FriendsFragment fragment = new FriendsFragment();
         fragment.users = users;
         fragment.image = image;
@@ -129,7 +132,7 @@ public class FriendsFragment extends DialogFragment {
                     // This tells us the item position we are looking at
                     final int position = checkedItems.keyAt(i);
 
-                    GraphUser user = users.get(position);
+                    User user = users.get(position);
                     userIds.add(user.getId());
                 }
 
@@ -137,7 +140,7 @@ public class FriendsFragment extends DialogFragment {
                     @Override
                     public void success(JsonElement jsonElement, Response response) {
 
-                        CreateUserResponse sessionUser = UserPreferences.getSessionUser();
+                        User sessionUser = UserPreferences.getSessionUser();
 
                         String source = jsonElement.toString();
                         //Log.d("taken", source);
@@ -145,13 +148,12 @@ public class FriendsFragment extends DialogFragment {
                         JsonObject json = jsonElement.getAsJsonObject();
                         String image = json.get("filename").getAsString();
 
-                        Proposition p = new Proposition();
-                        p.setReceivers(userIds);
-                        p.setSender(sessionUser.getId());
-                        p.setSenderName(sessionUser.getName());
-                        p.setImage(image);
+                        mProposition.setReceivers(userIds);
+                        mProposition.setSender(sessionUser.getId());
+                        mProposition.setSenderName(sessionUser.getName());
+                        mProposition.setImage(image);
 
-                        ApplicationController.api().sendPropostion(p, new Callback<JsonElement>() {
+                        ApplicationController.api().sendPropostion(mProposition, new Callback<JsonElement>() {
                             @Override
                             public void success(JsonElement jsonElement, Response response) {
 
@@ -188,13 +190,17 @@ public class FriendsFragment extends DialogFragment {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(v);
         Drawable d = new ColorDrawable(Color.BLACK);
-        d.setAlpha(130);
+        d.setAlpha(30);
         dialog.getWindow().setBackgroundDrawable(d);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         return dialog;
     }
 
+    @OnClick({R.id.button_private, R.id.button_public})
+    public void setPropositioonScope(Button button) {
+        mProposition.setIsPrivate(button.getId() == R.id.button_private);
+    }
 
     /**
      * This interface must be implemented by activities that contain this
