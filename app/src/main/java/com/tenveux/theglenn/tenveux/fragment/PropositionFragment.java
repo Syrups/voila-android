@@ -21,7 +21,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tenveux.theglenn.tenveux.network.ApiController;
@@ -106,12 +108,12 @@ public class PropositionFragment extends Fragment {
         Picasso.with(getActivity()).load(imageURl).into(mImage, new Callback() {
             @Override
             public void onSuccess() {
-                Log.d("done", "done");
+                Log.d("Picasso", "done");
             }
 
             @Override
             public void onError() {
-                Log.d("error", "error");
+                Log.d("Picasso", "error");
             }
         });
 
@@ -124,7 +126,7 @@ public class PropositionFragment extends Fragment {
                 .into(avatar);*/
 
         // Sender informations
-        String name = proposition.getSenderName();
+        String name = proposition.getSender().getName();
         String tenveux = getResources().getString(R.string.ten_veux);
         Spanned phrase = Html.fromHtml("<b>" + name + "</b> : " + "<i>" + tenveux + "</i>");
 
@@ -182,7 +184,7 @@ public class PropositionFragment extends Fragment {
 
     @OnClick(R.id.button_not_take)
     void setmDismissButton() {
-        ApplicationController.api().dismissPropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
+        ApplicationController.propositionApi().dismissPropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
                 Log.d("dismiss", response.getBody().toString());
@@ -201,7 +203,7 @@ public class PropositionFragment extends Fragment {
     @OnClick(R.id.button_take)
     void setmTakeButton() {
 
-        ApplicationController.api().takePropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
+        ApplicationController.propositionApi().takePropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
                 Log.d("take", response.getBody().toString());
@@ -216,7 +218,6 @@ public class PropositionFragment extends Fragment {
             }
         });
     }
-
 
     void showDialog() {
         // Create the fragment and show it as a dialog.
@@ -310,8 +311,8 @@ public class PropositionFragment extends Fragment {
 
         @OnClick(R.id.button_resend)
         void setButtonRe() {
-         this.dismiss();
-         //reSend();
+            this.dismiss();
+            //reSend();
         }
 
         @Override

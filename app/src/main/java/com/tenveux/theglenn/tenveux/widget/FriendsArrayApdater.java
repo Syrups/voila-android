@@ -29,7 +29,7 @@ public class FriendsArrayApdater extends ArrayAdapter {
     public FriendsArrayApdater(Context context, int resource, List<User> users) {
         super(context, resource);
 
-       mUsers = users;
+        mUsers = users;
         mContext = context;
         layoutResourceId = resource;
         inflater = LayoutInflater.from(getContext());
@@ -60,17 +60,10 @@ public class FriendsArrayApdater extends ArrayAdapter {
 
         User user = getItem(position);
 
-        String name = user.getName();
-        String fName = user.getName();
-        String lName = user.getName();
 
         if (user != null) {
 
-            if (name.length() <= 0 || null == fName) {
-                String[] arrs = name.split(" ");
-                fName = arrs[0];
-                lName = arrs[1];
-            }
+            String name = user.getName();
 
             //TODO : uncoment
             /*Picasso.with(getContext())
@@ -80,8 +73,7 @@ public class FriendsArrayApdater extends ArrayAdapter {
                             //.transform(new CircleTransformation())
                     .into(holder.avatar);*/
 
-            holder.t1.setText(fName);
-            holder.t2.setText(lName);
+            holder.t1.setText(name);
         }
 
         return view;
@@ -91,10 +83,9 @@ public class FriendsArrayApdater extends ArrayAdapter {
     static class ViewHolder {
         @InjectView(R.id.avatar)
         CircleImageView avatar;
+
         @InjectView(android.R.id.text1)
         TextView t1;
-        @InjectView(android.R.id.text2)
-        TextView t2;
 
 
         public ViewHolder(View view) {

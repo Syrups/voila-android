@@ -1,6 +1,7 @@
 package com.tenveux.theglenn.tenveux.models;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +13,13 @@ public class Proposition {
 
     @Expose
     private String id;
+
     @Expose
-    private String sender;
+    private User sender;
+
     @Expose
     private List<String> receivers = new ArrayList<String>();
-    @Expose
-    private String senderName;
+
     @Expose
     private String sentAt;
     @Expose
@@ -43,13 +45,14 @@ public class Proposition {
         this.id = id;
     }
 
-    public String getSender() {
+    public User getSender() {
         return sender;
     }
 
-    public void setSender(String sender) {
+    public void setSender(User sender) {
         this.sender = sender;
     }
+
 
     public List<String> getReceivers() {
         return receivers;
@@ -57,14 +60,6 @@ public class Proposition {
 
     public void setReceivers(List<String> receivers) {
         this.receivers = receivers;
-    }
-
-    public String getSenderName() {
-        return senderName;
-    }
-
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
     }
 
     public String getSentAt() {

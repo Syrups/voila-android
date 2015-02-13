@@ -27,29 +27,19 @@
     -->
 
     <TextView
-        fontPath="fonts/JosefinSansStd-Light.otf"
         android:id="@android:id/text1"
+        fontPath="fonts/JosefinSansStd-Light.otf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:ellipsize="end"
         android:lines="1"
         android:text="Glenn"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 
-    <TextView
-        fontPath="fonts/JosefinSansStd-Light.otf"
-        android:id="@android:id/text2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="5dp"
-        android:layout_weight="1"
-        android:ellipsize="end"
-        android:lines="1"
-        android:text="Sonna"
-        android:textColor="@color/friend_name"
-        android:textSize="20sp" />
+
 
     <com.tenveux.theglenn.tenveux.widget.InertCheckBox
         android:layout_width="wrap_content"

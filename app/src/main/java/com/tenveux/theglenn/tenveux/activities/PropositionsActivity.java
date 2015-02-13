@@ -52,7 +52,7 @@ public class PropositionsActivity extends ActionBarActivity {
             @Override
             public void success(List<Proposition> propositions, Response response) {
 
-                Log.d("succes", new Gson().toJson(propositions).toString());
+                Log.d("succes", new Gson().toJson(propositions));
                 mPagerAdapter = new PropositionPagerAdapter(getSupportFragmentManager(), propositions);
                 mViewPager.setAdapter(mPagerAdapter);
 

@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.InjectViews;
 import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -49,14 +51,19 @@ public class FriendsFragment extends DialogFragment {
     private static final String ARG_ADAPT = "adapter";
 
     // TODO: Rename and change types of parameters
+    private Proposition mProposition = new Proposition();
     private FriendsArrayApdater adapter;
     public List<User> users;
     TypedFile image;
 
     private FrienSelectedListner mListener;
-    private ListView mUsersList;
 
-    private Proposition mProposition = new Proposition();
+    @InjectView(android.R.id.list)
+    ListView mUsersList;
+
+    @InjectViews({R.id.button_private, R.id.button_public})
+    List<Button> buttons;
+
 
     // TODO: Rename and change types of parameters
     public static FriendsFragment newInstance(List<User> users, TypedFile image) {
@@ -106,84 +113,14 @@ public class FriendsFragment extends DialogFragment {
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_fragment_friends, null);
         adapter = new FriendsArrayApdater(getActivity(), R.layout.list_item_friends, this.users);
 
-        mUsersList = ButterKnife.findById(v, android.R.id.list);
+        ButterKnife.inject(this, v);
+
+
         mUsersList.setAdapter(adapter);
         mUsersList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         mUsersList.setItemsCanFocus(false);
         mUsersList.setDivider(null);
 
-
-        Button sendProposition = ButterKnife.findById(v, R.id.send_proposition_button);
-        sendProposition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                final SparseBooleanArray checkedItems = mUsersList.getCheckedItemPositions();
-
-                if (checkedItems == null) {
-                    return;
-                }
-
-                // For each element in the status array
-                int checkedItemsCount = checkedItems.size();
-                final List<String> userIds = new ArrayList<String>();
-
-                for (int i = 0; i < checkedItemsCount; ++i) {
-                    // This tells us the item position we are looking at
-                    final int position = checkedItems.keyAt(i);
-
-                    User user = users.get(position);
-                    userIds.add(user.getId());
-                }
-
-                ApplicationController.offApi().sendImage(image, new Callback<JsonElement>() {
-                    @Override
-                    public void success(JsonElement jsonElement, Response response) {
-
-                        User sessionUser = UserPreferences.getSessionUser();
-
-                        String source = jsonElement.toString();
-                        //Log.d("taken", source);
-
-                        JsonObject json = jsonElement.getAsJsonObject();
-                        String image = json.get("filename").getAsString();
-
-                        mProposition.setReceivers(userIds);
-                        mProposition.setSender(sessionUser.getId());
-                        mProposition.setSenderName(sessionUser.getName());
-                        mProposition.setImage(image);
-
-                        ApplicationController.api().sendPropostion(mProposition, new Callback<JsonElement>() {
-                            @Override
-                            public void success(JsonElement jsonElement, Response response) {
-
-                                Log.d("SendProposition", jsonElement.toString());
-                                switch (response.getStatus()) {
-                                    case 201:
-                                        FriendsFragment.this.dismiss();
-                                        mListener.onPropositionSent(jsonElement);
-                                        break;
-                                    case 500:
-
-                                        break;
-                                }
-                            }
-
-                            @Override
-                            public void failure(RetrofitError error) {
-
-                                error.printStackTrace();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        error.printStackTrace();
-                    }
-                });
-            }
-        });
 
         // creating the fullscreen dialog
         final Dialog dialog = new Dialog(getActivity());
@@ -198,9 +135,83 @@ public class FriendsFragment extends DialogFragment {
     }
 
     @OnClick({R.id.button_private, R.id.button_public})
-    public void setPropositioonScope(Button button) {
-        mProposition.setIsPrivate(button.getId() == R.id.button_private);
+    void setPropositioonScope(Button button) {
+
+        Boolean isPrivate = button.getId() == R.id.button_private;
+
+        buttons.get(0).setSelected(isPrivate);
+        buttons.get(1).setSelected(!isPrivate);
+
+        mProposition.setIsPrivate(isPrivate);
     }
+
+    @OnClick(R.id.send_proposition_button)
+    void serve() {
+        final SparseBooleanArray checkedItems = mUsersList.getCheckedItemPositions();
+
+        if (checkedItems == null) {
+            return;
+        }
+
+        // For each element in the status array
+        int checkedItemsCount = checkedItems.size();
+        final List<String> userIds = new ArrayList<String>();
+
+        for (int i = 0; i < checkedItemsCount; ++i) {
+            // This tells us the item position we are looking at
+            final int position = checkedItems.keyAt(i);
+
+            User user = users.get(position);
+            userIds.add(user.getId());
+        }
+
+        ApplicationController.offApi().sendImage(image, new Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement jsonElement, Response response) {
+
+                User sessionUser = UserPreferences.getSessionUser();
+
+                String source = jsonElement.toString();
+                Log.d("taken", source);
+
+                JsonObject json = jsonElement.getAsJsonObject();
+                String image = json.get("filename").getAsString();
+
+                mProposition.setReceivers(userIds);
+                mProposition.setSender(sessionUser);
+                mProposition.setImage(image);
+
+                ApplicationController.propositionApi().sendPropostion(mProposition, new Callback<JsonElement>() {
+                    @Override
+                    public void success(JsonElement jsonElement, Response response) {
+
+                        Log.d("SendProposition", jsonElement.toString());
+                        switch (response.getStatus()) {
+                            case 201:
+                                FriendsFragment.this.dismiss();
+                                mListener.onPropositionSent(jsonElement);
+                                break;
+                            case 500:
+
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                        error.printStackTrace();
+                    }
+                });
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                error.printStackTrace();
+            }
+        });
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -215,6 +226,7 @@ public class FriendsFragment extends DialogFragment {
     public interface FrienSelectedListner {
         // TODO: Update argument type and name
         public void onPropositionSent(JsonElement JsonElement);
+
     }
 
     @Override

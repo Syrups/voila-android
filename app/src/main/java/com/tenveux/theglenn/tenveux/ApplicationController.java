@@ -2,13 +2,19 @@ package com.tenveux.theglenn.tenveux;
 
 import android.app.Application;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.tenveux.theglenn.tenveux.models.Proposition;
+import com.tenveux.theglenn.tenveux.models.data.PropositionSerializer;
 import com.tenveux.theglenn.tenveux.network.ApiController;
 import com.tenveux.theglenn.tenveux.network.OffApiController;
+import com.tenveux.theglenn.tenveux.network.apis.ApiPropositions;
 import com.tenveux.theglenn.tenveux.network.apis.ApiUsers;
 import com.tenveux.theglenn.tenveux.network.client.MockClient;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.converter.GsonConverter;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -30,6 +36,7 @@ public class ApplicationController extends Application {
     private ApiController service;
     private OffApiController offService;
     private ApiUsers userService;
+    private ApiPropositions propoService;
 
     private boolean isUserLoggedIn;
     private String userToken;
@@ -52,18 +59,27 @@ public class ApplicationController extends Application {
             }
         };
 
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Proposition.class, new PropositionSerializer()) // This is the important line ;)
+                .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
+                .create();
+
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setRequestInterceptor(requestInterceptor)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(ApiController.BASE_URL)
+                .setConverter(new GsonConverter(gson))
+                .setRequestInterceptor(requestInterceptor)
                 .setClient(new MockClient())
                 .build();
         //service = restAdapter.create(ApiController.class);
         userService = restAdapter.create(ApiUsers.class);
+        propoService = restAdapter.create(ApiPropositions.class);
 
 
         RestAdapter offAdapter = new RestAdapter.Builder()
                 .setRequestInterceptor(requestInterceptor)
                 .setEndpoint(ApiController.BASE)
+                .setClient(new MockClient())
                 .build();
         offService = offAdapter.create(OffApiController.class);
 
@@ -89,6 +105,11 @@ public class ApplicationController extends Application {
     public static ApiUsers userApi() {
         return sInstance.userService;
     }
+
+    public static ApiPropositions propositionApi() {
+        return sInstance.propoService;
+    }
+
     public static ApiController api() {
         return sInstance.service;
     }

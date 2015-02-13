@@ -24,15 +24,20 @@ public class MockClient implements Client {
 
         String responseString = "";
 
-        if (uri.getPath().contains("/api/users/")) {
+
+        if (uri.getPath().contains("images")) {
+
+            responseString = "{\"filename\" : \"caca.png\"}";
+
+        } else if (uri.getPath().contains("api/users")) {
+
             responseString = UserClient.handleUserRequest(uri, request);
-        } else if (uri.getPath().contains("/api/proposition/")) {
-            responseString = "{\n" +
-                    "  \"id\": \"1234\",\n" +
-                    "  \"username\": \"dozen\",\n" +
-                    "  \"avatar\": \"a.png\"\n" +
-                    "}";
-        }else{
+
+        } else if (uri.getPath().contains("api/propositions")) {
+
+            return PropositionClient.handleUserRequest(uri, request);
+
+        } else {
             responseString = "{\n" +
                     "  \"id\": \"1234\",\n" +
                     "  \"username\": \"dozen\",\n" +

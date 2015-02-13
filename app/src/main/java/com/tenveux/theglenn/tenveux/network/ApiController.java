@@ -35,10 +35,7 @@ public interface ApiController {
     public static final String USERS_RECEIVED = "/users/{id}/received";
     public static final String USERS_SENT = "/users/{id}/sent";
 
-    //Proposition
-    public static final String PROPOSITION_SEND = "/propositions";
-    public static final String PROPOSITION_TAKE = "/propositions/{id}/take";
-    public static final String PROPOSITION_DIS = "/propositions/{id}/dismiss";
+
 
     public static final String IMAGE = "/images";
 
@@ -52,15 +49,6 @@ public interface ApiController {
     @GET(USERS_PENDING)
     public void getPendingPropostion(@Path("id") String id, Callback<List<Proposition>> callback);
 
-    //Proposition functions
 
-    @POST(PROPOSITION_SEND)
-    public void sendPropostion(@Body Proposition proposition, Callback<JsonElement> callback);
-
-    @GET(PROPOSITION_TAKE)
-    public void takePropostion(@Path("id") String id, Callback<JsonElement> callback);
-
-    @GET(PROPOSITION_DIS)
-    public void dismissPropostion(@Path("id") String id, Callback<JsonElement> callback);
 
 }
