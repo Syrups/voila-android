@@ -15,7 +15,7 @@ public class UserClient {
     public static final String receivedResponse = "[ { _id: '54dd0b0af7c1a0261b1f1f25',\n" +
             "    sender: \n" +
             "     { _id: '54dd0b0af7c1a0261b1f1f21',\n" +
-            "       username: 'oof',\n" +
+            "       username: 'lilycochone',\n" +
             "       password: '\\u0019�\\u000e��\\\\�\\u000b�gZ�?��A\\u0019�������\\u0016',\n" +
             "       email: 'o@gmail.com',\n" +
             "       token: '70ee6fd96948403cddacddebe1d32460',\n" +

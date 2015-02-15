@@ -34,6 +34,7 @@ dependencies {
     //compile 'com.pkmmte.view:circularimageview:1.1'
     compile 'de.hdodenhof:circleimageview:1.2.1'
 
+    compile 'com.nineoldandroids:library:2.4.0+'
     compile 'com.jakewharton:butterknife:5.1.2'
     compile 'net.simonvt.menudrawer:menudrawer:3.0.6'
     compile 'uk.co.chrisjenx:calligraphy:1.2.0'

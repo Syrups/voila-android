@@ -18,12 +18,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import com.nineoldandroids.animation.ValueAnimator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tenveux.theglenn.tenveux.network.ApiController;
@@ -31,15 +33,17 @@ import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.activities.PropositionsActivity;
 import com.tenveux.theglenn.tenveux.models.Proposition;
+import com.tenveux.theglenn.tenveux.widget.VoilaSeekBar;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -132,8 +136,87 @@ public class PropositionFragment extends Fragment {
 
         text.setText(phrase);
 
+        this.setupSwitch(v);
+
 
         return v;
+    }
+
+
+    /*
+         * Mise en place du switch entre les mode de r�servaion
+         */
+    protected void setupSwitch(View view) {
+
+
+        final VoilaSeekBar switchBar = (VoilaSeekBar) view.findViewById(R.id.seekBar);
+        switchBar.setProgress(100);
+        switchBar.incrementProgressBy(0);
+        switchBar.setMax(200);
+
+        final ValueAnimator anim = ValueAnimator.ofInt(0, switchBar.getMax());
+        anim.setDuration(1000);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int animProgress = (Integer) animation.getAnimatedValue();
+                int step = 4;
+                int midMax = switchBar.getMax() / 2;
+
+                float moreLess = midMax * 0.5f;
+                float morePlus = midMax * 1.5f;
+
+                if (switchBar.getProgress() == midMax) {
+
+                    animProgress = midMax;
+
+                } else if (switchBar.getProgress() <= midMax) {
+                    if (switchBar.getProgress() < moreLess) {
+
+                        animProgress = switchBar.getProgress() - step;
+
+                    } else {
+                        animProgress = switchBar.getProgress() + step;
+
+                    }
+                } else {
+                    if (switchBar.getProgress() < morePlus) {
+
+                        animProgress = switchBar.getProgress() - step;
+
+                    } else {
+                        animProgress = switchBar.getProgress() + step;
+
+                    }
+                }
+
+                switchBar.setProgress(animProgress);
+
+            }
+        });
+
+        switchBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar,
+                                          int progress, boolean fromUser) {
+                progress = progress / 10;
+                progress = progress * 10;
+
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                anim.start();
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -182,7 +265,7 @@ public class PropositionFragment extends Fragment {
         return domain;
     }
 
-    @OnClick(R.id.button_not_take)
+
     void setmDismissButton() {
         ApplicationController.propositionApi().dismissPropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
