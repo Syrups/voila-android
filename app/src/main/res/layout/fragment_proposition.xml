@@ -26,10 +26,9 @@
             fontPath="fonts/JosefinSansStd-Light.otf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/avatar"
             android:background="@color/tenveux_text_bg"
             android:gravity="center"
-            android:padding="10dp"
+            android:paddingTop="110dp"
             android:text="Léonard : t'en veux ?"
             android:textColor="@android:color/white"
             android:textSize="15sp" />
@@ -45,19 +44,8 @@
             android:layout_marginTop="10dp"
             android:src="@drawable/glenn"
             app:border_color="@android:color/white"
-            app:border_width="1dp"/>
+            app:border_width="1dp" />
 
-        <ImageButton
-            android:id="@+id/button_not_take"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/button_take"
-            android:layout_toStartOf="@+id/button_take"
-            android:background="@drawable/btn_not_take"
-            android:src="@drawable/ic_x_picture" />
 
         <Button
             android:id="@+id/button_take"
@@ -67,7 +55,17 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal|bottom"
-            android:text="J'en Prends !"
-             />
+            android:text="J'en Prends !" />
+
+        <com.tenveux.theglenn.tenveux.widget.VoilaSeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:background="@null"
+            android:progressDrawable="@android:color/transparent" />
     </RelativeLayout>
 </FrameLayout>
