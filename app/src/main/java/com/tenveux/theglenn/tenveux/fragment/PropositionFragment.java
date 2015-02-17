@@ -1,11 +1,13 @@
 package com.tenveux.theglenn.tenveux.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -26,8 +31,10 @@ import com.google.gson.JsonElement;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import com.nineoldandroids.animation.ValueAnimator;
+import com.nineoldandroids.view.ViewHelper;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.tenveux.theglenn.tenveux.Utils;
 import com.tenveux.theglenn.tenveux.network.ApiController;
 import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.R;
@@ -45,29 +52,28 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PropositionFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PropositionFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PropositionFragment extends Fragment {
 
-
-    private OnFragmentInteractionListener mListener;
+    final static float END_SCALE = 1.2f;
 
     @InjectView(android.R.id.text1)
     TextView text;
 
+    @InjectView(R.id.text_status_fading)
+    TextView statusText;
+
     @InjectView(android.R.id.background)
     ImageView mImage;
+
+    @InjectView(R.id.layout_status_fading)
+    View fadingView;
+
 
     @InjectView(R.id.avatar)
     CircleImageView mAvatar;
 
     Proposition proposition;
+
 
     /**
      * Fragment representing a proposition
@@ -102,7 +108,7 @@ public class PropositionFragment extends Fragment {
 
         String imageURl = null;
         try {
-            imageURl = getImage2(proposition.getImage());
+            imageURl = Utils.getImage2(proposition.getImage());
             //title.setText(imageURl);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -143,148 +149,115 @@ public class PropositionFragment extends Fragment {
     }
 
 
-    /*
-         * Mise en place du switch entre les mode de r�servaion
-         */
     protected void setupSwitch(View view) {
 
 
         final VoilaSeekBar switchBar = (VoilaSeekBar) view.findViewById(R.id.seekBar);
-        switchBar.setProgress(100);
-        switchBar.incrementProgressBy(0);
-        switchBar.setMax(200);
 
-        final ValueAnimator anim = ValueAnimator.ofInt(0, switchBar.getMax());
-        anim.setDuration(1000);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        final float initX = ViewHelper.getScaleX(statusText) * 2;
+        final float initY = ViewHelper.getScaleY(statusText) * 2;
 
+
+        ViewHelper.setScaleX(statusText, initX);
+        ViewHelper.setScaleY(statusText, initY);
+
+        switchBar.setOnVoilaSeekBarChangeListener(new VoilaSeekBar.OnVoilaSeekBarChangeListener() {
+
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int animProgress = (Integer) animation.getAnimatedValue();
-                int step = 4;
-                int midMax = switchBar.getMax() / 2;
+            public void onOptionSelected(final boolean isPositive) {
 
-                float moreLess = midMax * 0.5f;
-                float morePlus = midMax * 1.5f;
+                boolean newApi = Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB;
+                final float currentX = newApi ? statusText.getScaleX() : ViewHelper.getScaleX(statusText);
+                final float currentY = newApi ? statusText.getScaleY() : ViewHelper.getScaleY(statusText);
 
-                if (switchBar.getProgress() == midMax) {
+                ScaleAnimation sAnim = new ScaleAnimation(
+                        currentX, END_SCALE,
+                        currentY, END_SCALE,
+                        Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f);
 
-                    animProgress = midMax;
+                sAnim.setDuration(100);
+                sAnim.setFillAfter(true);
+                statusText.startAnimation(sAnim);
 
-                } else if (switchBar.getProgress() <= midMax) {
-                    if (switchBar.getProgress() < moreLess) {
-
-                        animProgress = switchBar.getProgress() - step;
-
-                    } else {
-                        animProgress = switchBar.getProgress() + step;
+                sAnim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
 
                     }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        if (isPositive)
+                            PropositionFragment.this.takeProposition();
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onNeutralSelected() {
+                fadingView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onStartTrackingTouch() {
+                fadingView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onValueChanged(SeekBar seekbar, int value) {
+
+                int progress = seekbar.getProgress();
+
+                float val = ((float) progress / 100.f) - 1.f;
+                float absValue = Math.abs(val);
+                float multiplier = 0.5f + absValue;
+
+                //Log.d("Progress", "->" + absValue);
+                //Log.d("value", progress + " = p");
+
+                int colorRes = val < 0 ? R.color.red : R.color.cyan;
+                int color = getResources().getColor(colorRes);
+
+                statusText.setTextColor(color);
+
+                if (absValue < .75f) {
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
+                        statusText.setAlpha(absValue);
+                        statusText.setScaleX(initX / multiplier);
+                        statusText.setScaleY(initY / multiplier);
+
+                    } else {
+
+                        ViewHelper.setAlpha(statusText, absValue);
+                        ViewHelper.setScaleX(statusText, initX / multiplier);
+                        ViewHelper.setScaleY(statusText, initY / multiplier);
+
+                    }
+                    //Log.d("ViewHelper", ViewHelper.getScaleX(statusText) + " A " + ViewHelper.getScaleY(statusText));
                 } else {
-                    if (switchBar.getProgress() < morePlus) {
+                    Log.d("ViewHelper", ViewHelper.getScaleX(statusText) + " A " + ViewHelper.getScaleY(statusText));
 
-                        animProgress = switchBar.getProgress() - step;
-
-                    } else {
-                        animProgress = switchBar.getProgress() + step;
-
-                    }
                 }
-
-                switchBar.setProgress(animProgress);
-
-            }
-        });
-
-        switchBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar,
-                                          int progress, boolean fromUser) {
-                progress = progress / 10;
-                progress = progress * 10;
-
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                anim.start();
             }
         });
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            //mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+    void showDialog() {
+        // Create the fragment and show it as a dialog.
+        DialogFragment newFragment = DialogProposition.newInstance();
+        newFragment.show(getFragmentManager(), "dialog");
     }
 
 
-    public static String getImage2(String url) throws URISyntaxException {
-        URI uri = new URI(url);
-        String domain = ApiController.BASE_IMG + uri.getRawPath();
-        return domain;
-    }
-
-
-    void setmDismissButton() {
-        ApplicationController.propositionApi().dismissPropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
-            @Override
-            public void success(JsonElement jsonElement, Response response) {
-                Log.d("dismiss", response.getBody().toString());
-                ((PropositionsActivity) getActivity()).removeProposition(proposition);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e("DisError", error.getMessage());
-                error.printStackTrace();
-            }
-        });
-    }
-
-
-    @OnClick(R.id.button_take)
-    void setmTakeButton() {
+    void takeProposition() {
 
         ApplicationController.propositionApi().takePropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
@@ -302,14 +275,38 @@ public class PropositionFragment extends Fragment {
         });
     }
 
-    void showDialog() {
-        // Create the fragment and show it as a dialog.
-        DialogFragment newFragment = DialogProposition.newInstance();
-        newFragment.show(getFragmentManager(), "dialog");
+    void dismissProposition() {
+        ApplicationController.propositionApi().dismissPropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement jsonElement, Response response) {
+                Log.d("dismiss", response.getBody().toString());
+                ((PropositionsActivity) getActivity()).removeProposition(proposition);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e("DisError", error.getMessage());
+                error.printStackTrace();
+            }
+        });
     }
 
-    /*void reSend(){
-        final Session session = Session.getActiveSession();
+    void bounceProposition() {
+        Proposition p = new Proposition();
+        p.setOriginalProposition(this.proposition.getId());
+
+        ApplicationController.propositionApi().sendPropostion(p, new retrofit.Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement jsonElement, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+       /* final Session session = Session.getActiveSession();
 
         if (session != null) {
             Log.d("sessiion", session.getState().isOpened() + "");
@@ -343,8 +340,8 @@ public class PropositionFragment extends Fragment {
                     }
                 }).executeAsync();
             }
-        }
-    }*/
+        }*/
+    }
 
     public static class DialogProposition extends DialogFragment {
 

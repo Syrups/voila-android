@@ -10,4 +10,6 @@
     <color name="menuItemTextColor">#a2a2a2</color>
     <color name="cyan">#05c0a7</color>
 
+    <color name="translucent_black">#E40e0c08</color>
+
 </resources>

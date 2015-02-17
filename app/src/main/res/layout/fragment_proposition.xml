@@ -17,9 +17,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginBottom="30dp">
+        android:animateLayoutChanges="true">
 
+
+        <View
+            android:id="@+id/layout_status_fading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/translucent_black" />
 
         <TextView
             android:id="@android:id/text1"
@@ -32,6 +37,19 @@
             android:text="Léonard : t'en veux ?"
             android:textColor="@android:color/white"
             android:textSize="15sp" />
+
+
+        <TextView
+            android:id="@+id/text_status_fading"
+            fontPath="fonts/SansitaOne.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="j'en prends !"
+            android:textColor="@color/cyan"
+            android:textSize="40sp" />
+
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatar"
@@ -47,22 +65,13 @@
             app:border_width="1dp" />
 
 
-        <Button
-            android:id="@+id/button_take"
-            style="@style/ButtonBigStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal|bottom"
-            android:text="J'en Prends !" />
-
         <com.tenveux.theglenn.tenveux.widget.VoilaSeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:background="@null"

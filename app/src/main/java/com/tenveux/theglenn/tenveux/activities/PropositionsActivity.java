@@ -48,22 +48,23 @@ public class PropositionsActivity extends ActionBarActivity {
 
         mViewPager.setPageTransformer(true, new DepthPageTransformer());
 
-        ApplicationController.userApi().getPendingProposition(u.getId(), new Callback<List<Proposition>>() {
-            @Override
-            public void success(List<Proposition> propositions, Response response) {
+        if (u != null)
+            ApplicationController.userApi().getPendingProposition(u.getId(), new Callback<List<Proposition>>() {
+                @Override
+                public void success(List<Proposition> propositions, Response response) {
 
-                Log.d("succes", new Gson().toJson(propositions));
-                mPagerAdapter = new PropositionPagerAdapter(getSupportFragmentManager(), propositions);
-                mViewPager.setAdapter(mPagerAdapter);
+                    Log.d("succes", new Gson().toJson(propositions));
+                    mPagerAdapter = new PropositionPagerAdapter(getSupportFragmentManager(), propositions);
+                    mViewPager.setAdapter(mPagerAdapter);
 
-                //setContentView(mViewPager);
-            }
+                    //setContentView(mViewPager);
+                }
 
-            @Override
-            public void failure(RetrofitError error) {
-                error.printStackTrace();
-            }
-        });
+                @Override
+                public void failure(RetrofitError error) {
+                    error.printStackTrace();
+                }
+            });
     }
 
     @Override

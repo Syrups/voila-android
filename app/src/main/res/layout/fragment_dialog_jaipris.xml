@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|top"
-        android:background="#E40e0c08"
+        android:background="@color/translucent_black"
         android:paddingBottom="30dp">
 
 
@@ -48,6 +48,7 @@
 
 
         <ImageView
+            android:id="@+id/imageView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/textView"
@@ -58,6 +59,7 @@
         <TextView
             android:id="@+id/textView"
             fontPath="fonts/SansitaOne.ttf"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -67,34 +69,27 @@
             android:textSize="40sp" />
 
         <Button
-            android:id="@+id/button_resend"
-            fontPath="fonts/JosefinSansStd-Light.otf"
+            android:id="@+id/button_ok"
+            fontPath="fonts/SansitaOne.ttf"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/dummy"
+            android:layout_centerHorizontal="true"
             android:background="@drawable/btn_rounded_border_white"
-            android:minWidth="150dp"
+            android:minWidth="70dp"
             android:text="ok !"
             android:textColor="@android:color/white" />
 
         <!-- Empty layout (0x0 dp) centered horizontally -->
-        <Space
-            android:id="@+id/dummy"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="7dp"
-            android:visibility="invisible" />
 
         <Button
-            android:id="@+id/button_ok"
-            fontPath="fonts/JosefinSansStd-Light.otf"
+            android:id="@+id/button_resend"
+            fontPath="fonts/SansitaOne.ttf"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_alignParentBottom="true"
-            android:layout_toEndOf="@+id/dummy"
-            android:layout_toRightOf="@+id/dummy"
+            android:layout_above="@+id/button_ok"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/btn_rounded_border_cyan"
             android:minWidth="150dp"
             android:text="reproposer"
