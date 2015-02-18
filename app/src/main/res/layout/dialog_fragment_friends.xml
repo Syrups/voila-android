@@ -15,43 +15,49 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Yeah"
+            android:text="@string/ten_veux"
             android:textColor="@android:color/white"
             android:textSize="50sp" />
 
         <RelativeLayout
-            android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
 
             <Button
+                android:id="@+id/button_private"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Privé"
-                android:id="@+id/button_private"
                 android:layout_alignParentTop="true"
                 android:layout_toLeftOf="@+id/imageView3"
-                android:layout_toStartOf="@+id/imageView3" />
+                android:layout_toStartOf="@+id/imageView3"
+                android:layout_weight="1"
+                android:alpha="0.5"
+                android:background="@drawable/button_selection_bg_transparent"
+                android:text="Privé"
+                android:textColor="@android:color/white" />
 
             <ImageView
+                android:id="@+id/imageView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageView3"
-                android:src="@drawable/ic_x_picture"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_friends_select_middle" />
 
             <Button
+                android:id="@+id/button_public"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ouvert"
-                android:id="@+id/button_public"
                 android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/imageView3"
                 android:layout_toRightOf="@+id/imageView3"
-                android:layout_toEndOf="@+id/imageView3" />
+                android:background="@drawable/button_selection_bg"
+                android:text="Ouvert"
+                android:textColor="@android:color/white" />
         </RelativeLayout>
 
     </LinearLayout>
@@ -85,5 +91,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         android:text="Servir" />
 </RelativeLayout>

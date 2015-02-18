@@ -11,9 +11,9 @@
 
     </style>
 
-    <style name="Tenveux.Widget.ActionBar.NOActionBar" >
+    <style name="Tenveux.Widget.ActionBar.NOActionBar">
 
-        <item name="android:windowActionBar">false</item>
+        <item name="android:windowActionBar" tools:ignore="NewApi">false</item>
         <item name="windowActionBar">false</item>
 
     </style>
@@ -21,7 +21,7 @@
     <!-- ACTION BAR STYLES -->
     <style name="Tenveux.Widget.ActionBar.overlay">
 
-        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay" tools:ignore="NewApi">true</item>
         <item name="windowActionBarOverlay">true</item>
 
         <item name="colorPrimary">@android:color/transparent</item>
@@ -36,7 +36,7 @@
 
     <style name="ButtonBigStyle">
         <item name="fontPath">fonts/SansitaOne.ttf</item>
-        <item name="android:background">@drawable/btn_bg_take</item>
+        <item name="android:background">@drawable/bg_cyan_gradiant</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 

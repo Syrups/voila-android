@@ -10,9 +10,9 @@
     <!-- As the main content view, the view below consumes the entire
          space available using match_parent in both dimensions. -->
     <FrameLayout
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
         <FrameLayout
             android:id="@+id/camera_preview"
@@ -38,9 +38,8 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:background="@null"
-            android:visibility="gone"
             android:src="@drawable/ic_x_picture"
-            />
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/button_capture"
@@ -49,23 +48,23 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/button_take_selector" />
 
         <Button
-            style="?android:attr/buttonStyleSmall"
+            android:id="@+id/button_load_media"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"
-            android:id="@+id/button_save_media"
-            android:layout_gravity="left|bottom" />
+            android:layout_gravity="left|bottom"
+            android:background="@drawable/button_import_photo" />
 
         <Button
-            style="?android:attr/buttonStyleSmall"
+            android:id="@+id/button_switch_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Switch"
-            android:id="@+id/button_switch_camera"
-            android:layout_gravity="right|bottom" />
+            android:layout_gravity="right|bottom"
+            android:background="@drawable/button_switch_camera" />
 
 
     </FrameLayout>

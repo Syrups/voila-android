@@ -9,14 +9,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -37,7 +35,6 @@ import com.tenveux.theglenn.tenveux.camera.CameraPreview;
 import com.tenveux.theglenn.tenveux.fragment.FriendsFragment;
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
-import com.tenveux.theglenn.tenveux.widget.BadgeView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -65,8 +62,8 @@ public class MainActivity extends ActionBarActivity
     @InjectView(R.id.button_capture)
     Button captureButton;
 
-    @InjectView(R.id.button_save_media)
-    Button saveButton;
+    @InjectView(R.id.button_load_media)
+    Button mLoadButton;
 
     @InjectView(R.id.button_switch_camera)
     Button switchCameraButton;
@@ -102,6 +99,9 @@ public class MainActivity extends ActionBarActivity
 
         }
     };
+
+    private List<Proposition> mPropositons;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -145,9 +145,12 @@ public class MainActivity extends ActionBarActivity
                 @Override
                 public void success(List<Proposition> propositions, Response response) {
 
-                    Log.d("success", "getReceivedPropostion");
+                    mPropositons = propositions;
+
+                    MainActivity.this.invalidateOptionsMenu();
+                    //Log.d("success", "getReceivedPropostion");
                     for (Proposition p : propositions) {
-                        Log.d("propostion", p.getImage());
+                        Log.i("propostion", p.getImage());
                     }
                 }
 
@@ -157,7 +160,7 @@ public class MainActivity extends ActionBarActivity
                 }
             });
         } else {
-            Log.d("User", "none");
+            Log.e("User", "none");
         }
 
         // Create an instance of Camera
@@ -258,7 +261,6 @@ public class MainActivity extends ActionBarActivity
     }
 
 
-
     private void releaseMediaRecorder() {
        /* if (mMediaRecorder != null) {
             mMediaRecorder.reset();   // clear recorder configuration
@@ -313,12 +315,21 @@ public class MainActivity extends ActionBarActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_go_propositions);
+
+        if (mPropositons != null && mPropositons.size() > 0) {
+            item.setIcon(R.drawable.ic_menu_received_notif);
+        } else {
+            item.setIcon(R.drawable.ic_menu_received);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_go_propositions) {
             goToPropositions();
@@ -334,35 +345,18 @@ public class MainActivity extends ActionBarActivity
         this.startActivity(mainIntent);
     }
 
-    @OnClick(R.id.button_save_media)
-    void saveMedia() {
+    public void openMenu() {
+        mDrawerLayout.openDrawer(Gravity.LEFT);
+    }
 
+    @OnClick(R.id.button_load_media)
+    void loadPhoneMedias() {
         Toast.makeText(this, "saveMedia", Toast.LENGTH_LONG).show();
     }
 
-
     @OnClick(R.id.button_switch_camera)
     void switchCamera() {
-
         mPreview.switchCamera(this);
-        Toast.makeText(this, "switchCamera", Toast.LENGTH_LONG).show();
-    }
-
-
-    public void onPropositionReceived(View v) {
-
-        BadgeView badge = new BadgeView(this, v);
-        badge.setText("1");
-        badge.setBadgeBackgroundColor(badgeColor);
-        badge.show();
-
-
-        badge.bringToFront();
-    }
-
-
-    public void openMenu() {
-        mDrawerLayout.openDrawer(Gravity.LEFT);
     }
 
     @Override
@@ -397,7 +391,7 @@ public class MainActivity extends ActionBarActivity
 
         mToolbar.setVisibility(View.VISIBLE);
 
-        saveButton.setVisibility(View.VISIBLE);
+        mLoadButton.setVisibility(View.VISIBLE);
         switchCameraButton.setVisibility(View.VISIBLE);
 
         captureButton.setVisibility(View.VISIBLE);
@@ -423,11 +417,10 @@ public class MainActivity extends ActionBarActivity
         captureButton.setSelected(true);
         captureButton.setClickable(false);
 
-
         cancelButton.setVisibility(View.VISIBLE);
         mToolbar.setVisibility(View.GONE);
 
-        saveButton.setVisibility(View.GONE);
+        mLoadButton.setVisibility(View.GONE);
         switchCameraButton.setVisibility(View.GONE);
 
         //sendButton.setVisibility(View.VISIBLE);

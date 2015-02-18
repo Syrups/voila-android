@@ -142,6 +142,9 @@ public class FriendsFragment extends DialogFragment {
         buttons.get(0).setSelected(isPrivate);
         buttons.get(1).setSelected(!isPrivate);
 
+        buttons.get(0).setBackgroundResource(isPrivate ? R.drawable.button_selection_bg : R.drawable.button_selection_bg_transparent);
+        buttons.get(1).setBackgroundResource(!isPrivate ? R.drawable.button_selection_bg : R.drawable.button_selection_bg_transparent);
+
         mProposition.setIsPrivate(isPrivate);
     }
 

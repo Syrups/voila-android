@@ -4,7 +4,7 @@
     tools:context=".MainActivity">
     <item
         android:id="@+id/action_go_propositions"
-        android:icon="@drawable/ic_notif"
+        android:icon="@drawable/ic_menu_received"
         android:title="@string/action_settings"
         app:showAsAction="always" />
 
