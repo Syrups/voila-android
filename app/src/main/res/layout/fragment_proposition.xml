@@ -26,17 +26,46 @@
             android:layout_height="match_parent"
             android:background="@color/translucent_black" />
 
-        <TextView
-            android:id="@android:id/text1"
-            fontPath="fonts/JosefinSansStd-Light.otf"
+
+        <include
+            android:id="@+id/taken_layout"
+            layout="@layout/view_layout_taken"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/tenveux_text_bg"
-            android:gravity="center"
-            android:paddingTop="110dp"
-            android:text="Léonard : t'en veux ?"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
+            android:paddingBottom="15dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatar"
+                android:layout_width="60dp"
+                android:layout_height="@dimen/abc_action_bar_default_height_material"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="-7dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/glenn"
+                app:border_color="@android:color/white"
+                app:border_width="1dp" />
+
+            <TextView
+                android:id="@android:id/text1"
+                fontPath="fonts/JosefinSansStd-Light.otf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/avatar"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="Léonard : t'en veux ?"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
 
 
         <TextView
@@ -48,33 +77,29 @@
             android:layout_centerVertical="true"
             android:text="j'en prends !"
             android:textColor="@color/cyan"
-            android:textSize="40sp" />
-
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/avatar"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="-7dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/glenn"
-            app:border_color="@android:color/white"
-            app:border_width="1dp" />
+            android:textSize="40sp"
+            android:visibility="invisible" />
 
 
         <com.tenveux.theglenn.tenveux.widget.VoilaSeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             android:layout_marginBottom="30dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
             android:background="@null"
-            android:progressDrawable="@android:color/transparent" />
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:progressDrawable="@android:color/transparent"
+            android:thumb="@drawable/voila_seek_bar_thumb" />
+
+        <ImageView
+            android:id="@+id/took_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/text_status_fading"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_took_logo"
+            android:visibility="invisible" />
     </RelativeLayout>
 </FrameLayout>

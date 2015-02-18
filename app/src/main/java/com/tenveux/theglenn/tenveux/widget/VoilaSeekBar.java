@@ -2,6 +2,7 @@ package com.tenveux.theglenn.tenveux.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -13,6 +14,8 @@ import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.tenveux.theglenn.tenveux.R;
 
+import java.util.Random;
+
 /**
  * Created by theGlenn on 15/02/15.
  */
@@ -22,7 +25,8 @@ public class VoilaSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeList
 
     private Paint unselected, green, red;
     private RectF position;
-    private int halfSize = 9, raster;
+    private float radius = 9;
+    int raster;
 
     private OnVoilaSeekBarChangeListener mListner;
     ObjectAnimator animation;
@@ -70,15 +74,34 @@ public class VoilaSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeList
         this.setProgress(100);
         this.incrementProgressBy(0);
         this.setMax(200);
-
     }
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
+
+        /*int width = canvas.getWidth();
+        int height = canvas.getHeight();
+
+        Paint mPaint = new Paint();
+
+        // prepare a paint
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeWidth(5);
+        mPaint.setAntiAlias(true);
+
+        // draw a rectangle
+        mPaint.setColor(Color.RED);
+        mPaint.setStyle(Paint.Style.FILL); //fill the background with blue color
+        canvas.drawRect(0, 0, width, height, mPaint);*/
+
+
         int paddingLeft = getPaddingLeft();
         int paddingTop = getPaddingTop();
 
         float halfHeight = (canvas.getHeight() + paddingTop) * .5f;
+        float dotHeight = halfHeight / 3.5f;
+        radius = dotHeight * .5f;
+
         int numberOfDots = 15;
         raster = getMax() / numberOfDots;
 
@@ -87,12 +110,13 @@ public class VoilaSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeList
 
         int progress = getProgress() / raster;
 
+        Log.d("ginger", radius + "radiius ->" + this.getWidth() + " w " + halfHeight + " half ");
 
         for (int i = 0; i < numberOfDots; i++) {
 
             boolean want = i > halfWay;
             boolean colored;
-            Paint p;
+            Paint p = unselected;
 
             if (want) {
                 colored = (i < progress);
@@ -103,24 +127,26 @@ public class VoilaSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeList
             }
 
             position.set(
-                    paddingLeft + (i * margin) - halfSize,
-                    halfHeight - halfSize,
-                    paddingLeft + (i * margin) + halfSize,
-                    halfHeight + halfSize);
+                    (i * margin) - radius,
+                    halfHeight - radius,
+                    (i * margin) + radius,
+                    halfHeight + radius);
 
-
-            canvas.drawOval(position, p);
+            //if (i != 0 && i != numberOfDots)
+            canvas.drawCircle(position.centerX() + paddingLeft, this.getHeight() / 2, 10, p);
 
         }
+
+
         super.onDraw(canvas);
     }
 
-    public int getDotsSize() {
-        return halfSize * 2;
+    public float getDotsSize() {
+        return radius * 2;
     }
 
     public void setDotsSize(int dotsSize) {
-        this.halfSize = dotsSize / 2;
+        this.radius = dotsSize / 2;
     }
 
     @Override

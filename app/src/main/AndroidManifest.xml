@@ -29,11 +29,7 @@
             android:name=".activities.PropositionsActivity"
             android:label="@string/title_activity_propositions"
             android:theme="@style/TenveuxTheme.TranslucentActionBar.Overlay">
-            <intent-filter android:label="@string/app_name">
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -53,7 +49,11 @@
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
     </application>
