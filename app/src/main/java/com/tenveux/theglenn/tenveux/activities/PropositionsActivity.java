@@ -7,6 +7,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 import com.tenveux.theglenn.tenveux.ApplicationController;
@@ -26,8 +28,10 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class PropositionsActivity extends ActionBarActivity {
+public class PropositionsActivity extends ActionBarActivity  {
 
+    @InjectView(R.id.progressBar)
+    ProgressBar mProgressBar;
 
     @InjectView(R.id.pager)
     ViewPager mViewPager;
@@ -57,6 +61,7 @@ public class PropositionsActivity extends ActionBarActivity {
                     mPagerAdapter = new PropositionPagerAdapter(getSupportFragmentManager(), propositions);
                     mViewPager.setAdapter(mPagerAdapter);
 
+                    mProgressBar.setVisibility(View.GONE);
                     //setContentView(mViewPager);
                 }
 
@@ -96,4 +101,6 @@ public class PropositionsActivity extends ActionBarActivity {
     public void removeProposition(Proposition proposition) {
         mPagerAdapter.remove(proposition);
     }
+
+
 }

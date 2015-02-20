@@ -2,7 +2,9 @@ package com.tenveux.theglenn.tenveux.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -14,12 +16,15 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.nineoldandroids.view.ViewHelper;
 import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.UserPreferences;
+import com.tenveux.theglenn.tenveux.Utils;
 import com.tenveux.theglenn.tenveux.models.CreateUserResponse;
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
@@ -51,12 +56,16 @@ public class FriendsFragment extends DialogFragment {
     private static final String ARG_ADAPT = "adapter";
 
     // TODO: Rename and change types of parameters
-    private Proposition mProposition = new Proposition();
-    private FriendsArrayApdater adapter;
-    public List<User> users;
-    TypedFile image;
 
+    private FriendsArrayApdater adapter;
     private FrienSelectedListner mListener;
+
+    TypedFile image;
+    List<User> users;
+    Proposition proposition = new Proposition();
+
+    boolean bounce;
+
 
     @InjectView(android.R.id.list)
     ListView mUsersList;
@@ -70,6 +79,14 @@ public class FriendsFragment extends DialogFragment {
         FriendsFragment fragment = new FriendsFragment();
         fragment.users = users;
         fragment.image = image;
+        return fragment;
+    }
+
+    public static FriendsFragment newInstance(List<User> users, Proposition p, boolean bounce) {
+        FriendsFragment fragment = new FriendsFragment();
+        fragment.users = users;
+        fragment.proposition = p;
+        fragment.bounce = bounce;
         return fragment;
     }
 
@@ -92,14 +109,22 @@ public class FriendsFragment extends DialogFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (FrienSelectedListner) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+        if (getParentFragment() == null) {
+            try {
+                mListener = (FrienSelectedListner) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString()
+                        + " must implement OnFragmentInteractionListener");
+            }
+        } else {
+            try {
+                mListener = (FrienSelectedListner) getParentFragment();
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString()
+                        + " must implement OnFragmentInteractionListener");
+            }
         }
     }
-
 
     @Override
     public void onDetach() {
@@ -126,9 +151,16 @@ public class FriendsFragment extends DialogFragment {
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(v);
-        Drawable d = new ColorDrawable(Color.BLACK);
-        d.setAlpha(30);
-        dialog.getWindow().setBackgroundDrawable(d);
+
+        //Drawable d = new ColorDrawable(Color.BLACK);
+        //d.setAlpha(30);
+
+        Bitmap map = Utils.takeScreenShot(getActivity());
+        Bitmap fast = Utils.fastblur(map, 10);
+        final Drawable draw = new BitmapDrawable(getResources(), fast);
+        dialog.getWindow().setBackgroundDrawable(draw);
+
+        //dialog.getWindow().setBackgroundDrawable(d);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         return dialog;
@@ -145,7 +177,10 @@ public class FriendsFragment extends DialogFragment {
         buttons.get(0).setBackgroundResource(isPrivate ? R.drawable.button_selection_bg : R.drawable.button_selection_bg_transparent);
         buttons.get(1).setBackgroundResource(!isPrivate ? R.drawable.button_selection_bg : R.drawable.button_selection_bg_transparent);
 
-        mProposition.setIsPrivate(isPrivate);
+        ViewHelper.setAlpha(buttons.get(0), isPrivate ? 1 : .4f);
+        ViewHelper.setAlpha(buttons.get(1), isPrivate ? .4f : 1);
+
+        proposition.setIsPrivate(isPrivate);
     }
 
     @OnClick(R.id.send_proposition_button)
@@ -180,36 +215,46 @@ public class FriendsFragment extends DialogFragment {
                 JsonObject json = jsonElement.getAsJsonObject();
                 String image = json.get("filename").getAsString();
 
-                mProposition.setReceivers(userIds);
-                mProposition.setSender(sessionUser);
-                mProposition.setImage(image);
+                proposition.setReceivers(userIds);
+                proposition.setSender(sessionUser);
 
-                ApplicationController.propositionApi().sendPropostion(mProposition, new Callback<JsonElement>() {
-                    @Override
-                    public void success(JsonElement jsonElement, Response response) {
+                if (!bounce) {
+                    proposition.setImage(image);
+                }
 
-                        Log.d("SendProposition", jsonElement.toString());
-                        switch (response.getStatus()) {
-                            case 201:
-                                FriendsFragment.this.dismiss();
-                                mListener.onPropositionSent(jsonElement);
-                                break;
-                            case 500:
-
-                                break;
-                        }
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-
-                        error.printStackTrace();
-                    }
-                });
+                servePropostion();
             }
 
             @Override
             public void failure(RetrofitError error) {
+                error.printStackTrace();
+            }
+        });
+    }
+
+
+    void servePropostion() {
+        ApplicationController.propositionApi().sendPropostion(proposition, new Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement jsonElement, Response response) {
+
+                Log.d("SendProposition", jsonElement.toString());
+                switch (response.getStatus()) {
+                    case 201:
+                        FriendsFragment.this.dismiss();
+                        mListener.onPropositionSent(jsonElement);
+                        break;
+                    case 500:
+
+                        break;
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                Toast.makeText(getActivity(), "Erreur de connextion", Toast.LENGTH_LONG);
+
                 error.printStackTrace();
             }
         });

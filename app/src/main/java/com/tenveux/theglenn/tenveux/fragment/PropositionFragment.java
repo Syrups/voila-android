@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.R;
+import com.tenveux.theglenn.tenveux.UserPreferences;
 import com.tenveux.theglenn.tenveux.Utils;
 import com.tenveux.theglenn.tenveux.activities.PropositionsActivity;
 import com.tenveux.theglenn.tenveux.models.Proposition;
@@ -39,7 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class PropositionFragment extends Fragment {
+public class PropositionFragment extends Fragment implements FriendsFragment.FrienSelectedListner{
 
     final static float END_SCALE = 1.2f;
 
@@ -73,7 +75,7 @@ public class PropositionFragment extends Fragment {
     @InjectView(R.id.seekBar)
     VoilaSeekBar mSwitchBar;
 
-    Proposition proposition;
+    Proposition mProposition;
 
 
     /**
@@ -84,7 +86,7 @@ public class PropositionFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static PropositionFragment newInstance(Proposition proposition) {
         PropositionFragment fragment = new PropositionFragment();
-        fragment.proposition = proposition;
+        fragment.mProposition = proposition;
         return fragment;
     }
 
@@ -109,7 +111,7 @@ public class PropositionFragment extends Fragment {
 
         String imageURl = null;
         try {
-            imageURl = Utils.getImage2(proposition.getImage());
+            imageURl = Utils.getImage2(mProposition.getImage());
             //title.setText(imageURl);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -137,7 +139,7 @@ public class PropositionFragment extends Fragment {
                 .into(avatar);*/
 
         // Sender informations
-        String name = proposition.getSender().getName();
+        String name = mProposition.getSender().getName();
         String tenveux = getResources().getString(R.string.ten_veux);
         Spanned phrase = Html.fromHtml("<b>" + name + "</b> : " + "<i>" + tenveux + "</i>");
 
@@ -281,7 +283,7 @@ public class PropositionFragment extends Fragment {
         sAnim.setFillAfter(true)
         mTookLogo.startAnimation(sAnim);;*/
 
-        ApplicationController.propositionApi().takePropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
+        ApplicationController.propositionApi().takePropostion(mProposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
                 Log.d("take", response.getBody().toString());
@@ -298,7 +300,7 @@ public class PropositionFragment extends Fragment {
     }
 
     void dismissProposition() {
-        ApplicationController.propositionApi().dismissPropostion(proposition.getId(), new retrofit.Callback<JsonElement>() {
+        ApplicationController.propositionApi().dismissPropostion(mProposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
                 Log.d("dismiss", response.getBody().toString());
@@ -315,25 +317,25 @@ public class PropositionFragment extends Fragment {
 
     @OnClick(R.id.button_resend)
     void bounceProposition() {
-        Proposition p = new Proposition();
-        p.setOriginalProposition(this.proposition.getId());
 
-        ApplicationController.propositionApi().sendPropostion(p, new retrofit.Callback<JsonElement>() {
-            @Override
-            public void success(JsonElement jsonElement, Response response) {
+        final Proposition bProposition = new Proposition();
+        bProposition.setOriginalProposition(this.mProposition.getId());
 
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-
-        ApplicationController.userApi().friends("", new retrofit.Callback<List<User>>() {
+        User session = UserPreferences.getSessionUser();
+        ApplicationController.userApi().friends(session.getId(), new retrofit.Callback<List<User>>() {
             @Override
             public void success(List<User> users, Response response) {
+                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                Fragment prev = getChildFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
 
+                ft.addToBackStack(null);
+
+                // Create and show the dialog.
+                FriendsFragment newFragment = FriendsFragment.newInstance(users, bProposition, true);
+                newFragment.show(ft, "dialog");
             }
 
             @Override
@@ -380,6 +382,11 @@ public class PropositionFragment extends Fragment {
 
     @OnClick(R.id.button_ok)
     void nextProposition() {
-        ((PropositionsActivity) getActivity()).removeProposition(proposition);
+        ((PropositionsActivity) getActivity()).removeProposition(mProposition);
+    }
+
+    @Override
+    public void onPropositionSent(JsonElement JsonElement) {
+
     }
 }

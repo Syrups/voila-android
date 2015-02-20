@@ -3,7 +3,10 @@ package com.tenveux.theglenn.tenveux.widget;
 /**
  * Created by theGlenn on 20/10/2014.
  */
+
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,7 @@ import java.util.List;
 /*
  * This class is useful for using inside of ListView that needs to have checkable items.
  */
+
 /**
  * Extension of a relative layout to provide a checkable behaviour
  *
@@ -30,6 +34,7 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable {
         public void onCheckedChanged(CheckableLinearLayout layout, boolean isChecked);
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public CheckableLinearLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initialise(attrs);
@@ -94,6 +99,7 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable {
      * Read the custom XML attributes
      */
     private void initialise(AttributeSet attrs) {
+
         this.isChecked = false;
         this.checkableViews = new ArrayList<Checkable>(5);
     }

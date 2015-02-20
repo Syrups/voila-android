@@ -4,12 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/translucent_black" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical">
+
 
         <TextView
             android:layout_width="match_parent"
@@ -36,7 +42,7 @@
                 android:layout_weight="1"
                 android:alpha="0.5"
                 android:background="@drawable/button_selection_bg_transparent"
-                android:text="Privé"
+                android:text="privé"
                 android:textColor="@android:color/white" />
 
             <ImageView
@@ -56,7 +62,7 @@
                 android:layout_toEndOf="@+id/imageView3"
                 android:layout_toRightOf="@+id/imageView3"
                 android:background="@drawable/button_selection_bg"
-                android:text="Ouvert"
+                android:text="ouvert"
                 android:textColor="@android:color/white" />
         </RelativeLayout>
 
@@ -74,8 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/send_proposition_button"
         android:layout_below="@+id/linearLayout"
-        android:background="@android:color/black"
-        android:padding="10dp" />
+        android:background="@color/translucent_black" />
 
     <View
         android:layout_width="match_parent"

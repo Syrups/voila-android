@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,8 +39,10 @@ import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -55,6 +59,7 @@ public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, FriendsFragment.FrienSelectedListner {
 
     private static final int badgeColor = Color.parseColor("#df006e");
+    private final int SELECT_PHOTO = 1;
 
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
@@ -74,6 +79,9 @@ public class MainActivity extends ActionBarActivity
     @InjectView(R.id.camera_preview)
     FrameLayout preview;
 
+    @InjectView(R.id.image_preview)
+    ImageView mPickedImage;
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -82,7 +90,8 @@ public class MainActivity extends ActionBarActivity
     private ListView mDrawerList;
 
 
-    private TypedFile imageToSend;
+    private TypedFile fileToSend;
+    private Bitmap photoToSend;
 
     private Camera camera;
     private int cameraId = 0;
@@ -95,8 +104,12 @@ public class MainActivity extends ActionBarActivity
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            switchPreviewMode(data);
 
+            MainActivity.this.photoToSend = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+            switchPreviewMode(false);
+
+            Log.d("taken", data.length + " / ");
         }
     };
 
@@ -106,6 +119,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(new CalligraphyContextWrapper(newBase));
+
     }
 
     @Override
@@ -190,6 +204,27 @@ public class MainActivity extends ActionBarActivity
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        switch (requestCode) {
+            case SELECT_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        final Uri imageUri = imageReturnedIntent.getData();
+                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+
+                        MainActivity.this.photoToSend = BitmapFactory.decodeStream(imageStream);
+
+                        switchPreviewMode(true);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+        }
+    }
 
     /**
      * Check if this device has a camera
@@ -254,6 +289,7 @@ public class MainActivity extends ActionBarActivity
     public void onResume() {
         super.onResume();
         if (mCamera == null) {
+            Log.d("onresume", "mCamera == null");
             mCamera = getCameraInstance();
             mPreview = new CameraPreview(this, mCamera);
             preview.addView(mPreview);
@@ -319,11 +355,12 @@ public class MainActivity extends ActionBarActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.action_go_propositions);
 
-        if (mPropositons != null && mPropositons.size() > 0) {
-            item.setIcon(R.drawable.ic_menu_received_notif);
-        } else {
-            item.setIcon(R.drawable.ic_menu_received);
-        }
+        if (item != null)
+            if (mPropositons != null && mPropositons.size() > 0) {
+                item.setIcon(R.drawable.ic_menu_received_notif);
+            } else {
+                item.setIcon(R.drawable.ic_menu_received);
+            }
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -336,7 +373,6 @@ public class MainActivity extends ActionBarActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
-
     }
 
     private void goToPropositions() {
@@ -351,7 +387,9 @@ public class MainActivity extends ActionBarActivity
 
     @OnClick(R.id.button_load_media)
     void loadPhoneMedias() {
-        Toast.makeText(this, "saveMedia", Toast.LENGTH_LONG).show();
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
     }
 
     @OnClick(R.id.button_switch_camera)
@@ -394,8 +432,11 @@ public class MainActivity extends ActionBarActivity
         mLoadButton.setVisibility(View.VISIBLE);
         switchCameraButton.setVisibility(View.VISIBLE);
 
+        mPickedImage.setVisibility(View.GONE);
+
         captureButton.setVisibility(View.VISIBLE);
         captureButton.setSelected(false);
+
 
         captureButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -407,13 +448,13 @@ public class MainActivity extends ActionBarActivity
                 }
         );
 
+
         mCamera.startPreview();
     }
 
-    private void switchPreviewMode(byte[] byteArray) {
+    private void switchPreviewMode(boolean withCamera) {
 
 
-        Bitmap photo = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         captureButton.setSelected(true);
         captureButton.setClickable(false);
 
@@ -423,82 +464,88 @@ public class MainActivity extends ActionBarActivity
         mLoadButton.setVisibility(View.GONE);
         switchCameraButton.setVisibility(View.GONE);
 
-        //sendButton.setVisibility(View.VISIBLE);
+        if (withCamera) {
+            mPickedImage.setVisibility(View.VISIBLE);
+            mPickedImage.setImageBitmap(this.photoToSend);
+        }
 
+        //sendButton.setVisibility(View.VISIBLE);
         //captureButton.setVisibility(View.GONE);
 
-        File imageFileFolder = new File(this.getCacheDir(), "Image");
-        if (!imageFileFolder.exists()) {
-            imageFileFolder.mkdir();
-        }
-
-        FileOutputStream fos = null;
-        File imageFileName = new File(imageFileFolder, "img-" + System.currentTimeMillis() + ".jpg");
-
-        try {
-            fos = new FileOutputStream(imageFileName);
-            //fos.write(byteArray);
-            photo.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-
-            fos.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fos != null) {
-                    fos.close();
-                }
-            } catch (IOException e) {
-                Log.e("ErrTenveux", "Failed to close output stream", e);
-            }
-        }
-
-        Log.d("taken", byteArray.length + " / ");
-
-        final TypedFile imagetoSend = new TypedFile("image/jpeg", imageFileName);
-        final User session = UserPreferences.getSessionUser();
-
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (session != null) {
-                    ApplicationController.userApi().friends(session.getId(), new Callback<List<User>>() {
-                        @Override
-                        public void success(List<User> users, Response response) {
-                            Log.d("users", "done");
-
-                            for (User u : users) {
-                                Log.d("users", u.getName());
-                            }
-                            // DialogFragment.show() will take care of adding the fragment
-                            // in a transaction.  We also want to remove any currently showing
-                            // dialog, so make our own transaction and take care of that here.
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
-                            if (prev != null) {
-                                ft.remove(prev);
-                            }
-
-                            ft.addToBackStack(null);
-
-                            // Create and show the dialog.
-                            FriendsFragment newFragment = FriendsFragment.newInstance(users, imagetoSend);
-                            newFragment.show(ft, "dialog");
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            error.printStackTrace();
-                        }
-                    });
-
-                }
-            }
-        });
-
+        captureButton.setOnClickListener(showFriends);
         captureButton.setClickable(true);
     }
 
+    View.OnClickListener showFriends = new View.OnClickListener() {
 
+        @Override
+        public void onClick(View v) {
+
+            File imageFileFolder = new File(getCacheDir(), "Image");
+            if (!imageFileFolder.exists())
+
+            {
+                imageFileFolder.mkdir();
+            }
+
+            FileOutputStream fos = null;
+            File imageFileName = new File(imageFileFolder, "img-" + System.currentTimeMillis() + ".jpg");
+
+            try {
+                fos = new FileOutputStream(imageFileName);
+                //fos.write(byteArray);
+                photoToSend.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+
+                fos.flush();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fos != null) {
+                        fos.close();
+                    }
+                } catch (IOException e) {
+                    Log.e("ErrTenveux", "Failed to close output stream", e);
+                }
+            }
+
+
+            final TypedFile imagetoSend = new TypedFile("image/jpeg", imageFileName);
+            final User session = UserPreferences.getSessionUser();
+
+
+            if (session != null) {
+                ApplicationController.userApi().friends(session.getId(), new Callback<List<User>>() {
+                    @Override
+                    public void success(List<User> users, Response response) {
+                        Log.d("users", "done");
+
+                        for (User u : users) {
+                            Log.d("users", u.getName());
+                        }
+                        // DialogFragment.show() will take care of adding the fragment
+                        // in a transaction.  We also want to remove any currently showing
+                        // dialog, so make our own transaction and take care of that here.
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+                        if (prev != null) {
+                            ft.remove(prev);
+                        }
+
+                        ft.addToBackStack(null);
+
+                        // Create and show the dialog.
+                        FriendsFragment newFragment = FriendsFragment.newInstance(users, imagetoSend);
+                        newFragment.show(ft, "dialog");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        error.printStackTrace();
+                    }
+                });
+            }
+        }
+    };
 }
