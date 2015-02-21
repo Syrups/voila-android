@@ -1,6 +1,7 @@
 package com.tenveux.theglenn.tenveux.activities.home;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,8 +9,16 @@ import com.tenveux.theglenn.tenveux.R;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class HomeActivity extends Activity {
+
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -3,9 +3,7 @@ package com.tenveux.theglenn.tenveux.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -25,7 +23,6 @@ import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.UserPreferences;
 import com.tenveux.theglenn.tenveux.Utils;
-import com.tenveux.theglenn.tenveux.models.CreateUserResponse;
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
 import com.tenveux.theglenn.tenveux.widget.FriendsArrayApdater;
@@ -60,7 +57,7 @@ public class FriendsFragment extends DialogFragment {
     private FriendsArrayApdater adapter;
     private FrienSelectedListner mListener;
 
-    TypedFile image;
+    TypedFile mImageFile;
     List<User> users;
     Proposition proposition = new Proposition();
 
@@ -78,7 +75,7 @@ public class FriendsFragment extends DialogFragment {
     public static FriendsFragment newInstance(List<User> users, TypedFile image) {
         FriendsFragment fragment = new FriendsFragment();
         fragment.users = users;
-        fragment.image = image;
+        fragment.mImageFile = image;
         return fragment;
     }
 
@@ -203,33 +200,35 @@ public class FriendsFragment extends DialogFragment {
             userIds.add(user.getId());
         }
 
-        ApplicationController.offApi().sendImage(image, new Callback<JsonElement>() {
-            @Override
-            public void success(JsonElement jsonElement, Response response) {
+        User sessionUser = UserPreferences.getSessionUser();
+        proposition.setReceivers(userIds);
+        proposition.setSender(sessionUser);
 
-                User sessionUser = UserPreferences.getSessionUser();
+        if (mImageFile != null) {
+            ApplicationController.offApi().sendImage(mImageFile, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
 
-                String source = jsonElement.toString();
-                Log.d("taken", source);
 
-                JsonObject json = jsonElement.getAsJsonObject();
-                String image = json.get("filename").getAsString();
+                    String source = jsonElement.toString();
+                    Log.d("taken", source);
 
-                proposition.setReceivers(userIds);
-                proposition.setSender(sessionUser);
+                    JsonObject json = jsonElement.getAsJsonObject();
+                    String image = json.get("filename").getAsString();
 
-                if (!bounce) {
                     proposition.setImage(image);
+
+                    servePropostion();
                 }
 
-                servePropostion();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                error.printStackTrace();
-            }
-        });
+                @Override
+                public void failure(RetrofitError error) {
+                    error.printStackTrace();
+                }
+            });
+        } else {
+            servePropostion();
+        }
     }
 
 

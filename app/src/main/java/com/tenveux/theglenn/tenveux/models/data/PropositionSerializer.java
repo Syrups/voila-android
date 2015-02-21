@@ -20,6 +20,7 @@ public class PropositionSerializer implements JsonSerializer<Proposition> {
 
         result.addProperty("id", proposition.getId());
         result.addProperty("sender", proposition.getSender().getId());
+        //result.addProperty("originalProposition", proposition.getOriginalProposition());
 
         return result;
     }

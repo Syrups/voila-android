@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -26,6 +27,8 @@ import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.UserPreferences;
 import com.tenveux.theglenn.tenveux.activities.MainActivity;
 import com.tenveux.theglenn.tenveux.models.User;
+import com.tenveux.theglenn.tenveux.widget.VoilaLoaderImageVIew;
+import com.tenveux.theglenn.tenveux.widget.VoilaSeekBar;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -39,6 +42,7 @@ import butterknife.InjectViews;
 import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 /**
@@ -54,8 +58,6 @@ public class LoginActivity extends ActionBarActivity {
             "foo@example.com:hello", "bar@example.com:world"
     };
 
-    @InjectView(R.id.login_progress)
-    View mProgressView;
 
     @InjectView(R.id.logo)
     ImageView logo;
@@ -66,12 +68,20 @@ public class LoginActivity extends ActionBarActivity {
     @InjectViews({R.id.user_name, R.id.password})
     List<EditText> mFieldsEditText;
 
+    @InjectView(R.id.voila_progress)
+    VoilaLoaderImageVIew mLoader;
+
     /**
      * Duration of wait *
      */
     private final int SPLASH_DISPLAY_LENGTH = 1000;
     //private static final String TAG = "FacebookT";
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +110,7 @@ public class LoginActivity extends ActionBarActivity {
                 }
             }
         }, SPLASH_DISPLAY_LENGTH);
-
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -178,7 +186,6 @@ public class LoginActivity extends ActionBarActivity {
     /**
      * Shows the progress UI and hides the login form.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
@@ -195,18 +202,12 @@ public class LoginActivity extends ActionBarActivity {
                 }
             });*/
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
+            mLoader.setVisibility(show ? View.VISIBLE : View.GONE);
+            //mLoader.animate();
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoader.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 

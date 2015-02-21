@@ -132,44 +132,4 @@ public class ApplicationController extends Application {
         userToken = token;
     }
 
-    /*public void sendImage(final Bitmap photo) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        photo.compress(Bitmap.CompressFormat.PNG, 90, stream); //compress to which format you want.
-        byte[] byte_arr = stream.toByteArray();
-        String image_str = Base64.encodeToString(byte_arr, Base64.DEFAULT);
-        final ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-
-        MultipartEntity reqEntity = new MultipartEntity(
-                HttpMultipartMode.BROWSER_COMPATIBLE);
-        reqEntity.addPart("uploaded", bab);
-        reqEntity.addPart("photoCaption", new StringBody("sfsdfsdf"));
-        postRequest.setEntity(reqEntity);
-        HttpResponse response = httpClient.execute(postRequest);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                response.getEntity().getContent(), "UTF-8"));
-        String sResponse;
-        StringBuilder s = new StringBuilder();
-
-        while ((sResponse = reader.readLine()) != null) {
-            s = s.append(sResponse);
-        }
-        System.out.println("Response: " + s);
-
-        nameValuePairs.add(new BasicNameValuePair("image", image_str));
-        new Thread(new Runnable() {
-            public void run() {
-
-
-                try {
-                    HttpClient httpclient = new DefaultHttpClient();
-                    HttpPost httppost = new HttpPost(ApiController.IMAGE);
-                    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                    HttpResponse response = httpclient.execute(httppost);
-                } catch (Exception e) {
-
-                    System.out.println("Error in http connection " + e.toString());
-                }
-            }
-        }).start();
-    }*/
 }

@@ -24,6 +24,7 @@ public class Proposition {
     private String sentAt;
     @Expose
     private String receivedAt;
+
     @Expose
     private String originalProposition;
     @Expose
