@@ -1,6 +1,8 @@
 package com.tenveux.theglenn.tenveux;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
@@ -14,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -218,5 +221,17 @@ public class Utils {
         //Log.e("pix", w + " " + h + " " + pix.length);
         bitmap.setPixels(pix, 0, w, 0, 0, w, h);
         return (bitmap);
+    }
+
+    private Bitmap getBitmapFromAsset(Context ctx, String strName) {
+        AssetManager assetManager = ctx.getAssets();
+        InputStream istr = null;
+        try {
+            istr = assetManager.open(strName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Bitmap bitmap = BitmapFactory.decodeStream(istr);
+        return bitmap;
     }
 }

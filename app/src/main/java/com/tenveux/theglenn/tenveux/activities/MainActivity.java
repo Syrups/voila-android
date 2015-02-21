@@ -4,12 +4,15 @@ package com.tenveux.theglenn.tenveux.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -37,6 +40,7 @@ import com.tenveux.theglenn.tenveux.camera.CameraPreview;
 import com.tenveux.theglenn.tenveux.fragment.FriendsFragment;
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
+import com.tenveux.theglenn.tenveux.widget.ExifUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -107,7 +111,7 @@ public class MainActivity extends ActionBarActivity
 
             MainActivity.this.photoToSend = BitmapFactory.decodeByteArray(data, 0, data.length);
 
-            switchPreviewMode(false);
+            switchPreviewMode(true);
 
             Log.d("taken", data.length + " / ");
         }
@@ -148,7 +152,6 @@ public class MainActivity extends ActionBarActivity
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout, mToolbar);
         mDrawerList = ButterKnife.findById(mNavigationDrawerFragment.getView(), android.R.id.list);
-
 
         //User datas
         User u = UserPreferences.getSessionUser();
@@ -212,16 +215,16 @@ public class MainActivity extends ActionBarActivity
             case SELECT_PHOTO:
                 if (resultCode == RESULT_OK) {
                     try {
-                        final Uri imageUri = imageReturnedIntent.getData();
-                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                        Uri imageUri = imageReturnedIntent.getData();
+                        InputStream imageStream = getContentResolver().openInputStream(imageUri);
 
-                        MainActivity.this.photoToSend = BitmapFactory.decodeStream(imageStream);
+                        Bitmap b = BitmapFactory.decodeStream(imageStream);
+                        MainActivity.this.photoToSend = ExifUtils.rotateBitmap(this, imageUri, b);
 
-                        switchPreviewMode(true);
+                        switchPreviewMode(false);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-
                 }
         }
     }
@@ -410,7 +413,7 @@ public class MainActivity extends ActionBarActivity
         );
 
         this.switchCameraMode();
-        Log.d("JsonElement", jsonElement.toString());
+        //Log.d("JsonElement", jsonElement.toString());
     }
 
     private void onPropositionReceived() {
@@ -448,12 +451,10 @@ public class MainActivity extends ActionBarActivity
                 }
         );
 
-
         mCamera.startPreview();
     }
 
     private void switchPreviewMode(boolean withCamera) {
-
 
         captureButton.setSelected(true);
         captureButton.setClickable(false);
@@ -468,9 +469,6 @@ public class MainActivity extends ActionBarActivity
             mPickedImage.setVisibility(View.VISIBLE);
             mPickedImage.setImageBitmap(this.photoToSend);
         }
-
-        //sendButton.setVisibility(View.VISIBLE);
-        //captureButton.setVisibility(View.GONE);
 
         captureButton.setOnClickListener(showFriends);
         captureButton.setClickable(true);
@@ -510,10 +508,8 @@ public class MainActivity extends ActionBarActivity
                 }
             }
 
-
             final TypedFile imagetoSend = new TypedFile("image/jpeg", imageFileName);
             final User session = UserPreferences.getSessionUser();
-
 
             if (session != null) {
                 ApplicationController.userApi().friends(session.getId(), new Callback<List<User>>() {
@@ -548,4 +544,6 @@ public class MainActivity extends ActionBarActivity
             }
         }
     };
+
+
 }

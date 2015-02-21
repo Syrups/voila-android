@@ -22,10 +22,11 @@ import java.util.Random;
 public class VoilaSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListener {
 
     private static final float MARGIN = 45.f;
+    final float scale = getResources().getDisplayMetrics().density;
 
     private Paint unselected, green, red;
     private RectF position;
-    private float radius = 9;
+    private float radius = 4.5f;
     int raster;
 
     private OnVoilaSeekBarChangeListener mListner;
@@ -79,6 +80,8 @@ public class VoilaSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeList
     @Override
     protected synchronized void onDraw(Canvas canvas) {
 
+
+        Log.d("scale", scale + "s");
         /*int width = canvas.getWidth();
         int height = canvas.getHeight();
 
@@ -100,7 +103,7 @@ public class VoilaSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeList
 
         float halfHeight = (canvas.getHeight() + paddingTop) * .5f;
         float dotHeight = halfHeight / 3.5f;
-        radius = dotHeight * .5f;
+        radius = (dotHeight * .5f) * scale;
 
         int numberOfDots = 15;
         raster = getMax() / numberOfDots;
@@ -110,7 +113,7 @@ public class VoilaSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeList
 
         int progress = getProgress() / raster;
 
-        Log.d("ginger", radius + "radiius ->" + this.getWidth() + " w " + halfHeight + " half ");
+        //Log.d("ginger", radius + "radiius ->" + this.getWidth() + " w " + halfHeight + " half ");
 
         for (int i = 0; i < numberOfDots; i++) {
 

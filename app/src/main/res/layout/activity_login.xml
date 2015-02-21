@@ -14,12 +14,14 @@
     android:paddingTop="?attr/actionBarSize"
     tools:context="com.tenveux.theglenn.tenveux.activities.home.LoginActivity">
 
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
+
+
+
+    <com.tenveux.theglenn.tenveux.widget.VoilaLoaderImageVIew
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_below="@+id/textView3"
+        android:layout_centerInParent="true"
         android:visibility="gone" />
 
     <ImageView
