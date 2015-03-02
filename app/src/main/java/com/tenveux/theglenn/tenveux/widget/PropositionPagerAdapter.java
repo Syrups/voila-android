@@ -5,31 +5,58 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
+import com.google.gson.reflect.TypeToken;
+import com.tenveux.theglenn.tenveux.models.Answer;
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.fragment.PropositionFragment;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by theGlenn on 01/11/2014.
  */
 public class PropositionPagerAdapter extends FragmentStatePagerAdapter {
 
-    List<Proposition> propositions;
+    List<Object> propositionAndAnswers;
 
-    public PropositionPagerAdapter(FragmentManager supportFragmentManager, List<Proposition> propositions) {
+
+    public PropositionPagerAdapter(FragmentManager supportFragmentManager, List<Object> propositionAndAnswers) {
         super(supportFragmentManager);
-        this.propositions = propositions;
+
+        //Type listType = new TypeToken<List<Proposition>>() {}.getType();
+        //mPropositons = new Gson().fromJson(propositions, listType);
+
+        this.propositionAndAnswers = propositionAndAnswers;
+
+        /*for (Proposition p : propositions) {
+            PropositionAnswerWrapper wrapper = new PropositionAnswerWrapper();
+            wrapper.proposition = p;
+            propositionAndAnswers.add(wrapper);
+
+        }
+
+        for (Answer a : answers) {
+            PropositionAnswerWrapper wrapper = new PropositionAnswerWrapper();
+            wrapper.answer = a;
+            propositionAndAnswers.add(wrapper);
+
+        }*/
     }
 
     @Override
     public Fragment getItem(int position) {
-        return PropositionFragment.newInstance(propositions.get(position));
+        Object wrapper = propositionAndAnswers.get(position);
+        return PropositionFragment.newInstance(wrapper);
+
+
     }
 
     @Override
     public int getCount() {
-        return this.propositions.size();
+        return this.propositionAndAnswers.size();
     }
 
     @Override
@@ -38,9 +65,15 @@ public class PropositionPagerAdapter extends FragmentStatePagerAdapter {
     }
 
 
-    public void remove(Proposition proposition) {
-        int position = propositions.indexOf(proposition);
-        propositions.remove(position);
+    public void remove(Object wrapper) {
+        int position = propositionAndAnswers.indexOf(wrapper);
+        propositionAndAnswers.remove(position);
         this.notifyDataSetChanged();
+    }
+
+    public class PropositionAnswerWrapper {
+        public Proposition proposition;
+        public Answer answer;
+
     }
 }

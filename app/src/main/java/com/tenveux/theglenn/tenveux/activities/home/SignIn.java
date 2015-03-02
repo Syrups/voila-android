@@ -1,6 +1,5 @@
 package com.tenveux.theglenn.tenveux.activities.home;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -113,7 +112,6 @@ public class SignIn extends ActionBarActivity {
             ApplicationController.getInstance().setUserToken(user.getToken());
         }
 
-        ApplicationController.getInstance().setIsUserLoggedIn(true);
 
         Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
         SignIn.this.startActivity(mainIntent);

@@ -14,7 +14,10 @@ import retrofit.mime.TypedFile;
  */
 public interface OffApiController {
 
+    public static final String MEDIA_URL = ApiController.BASE + "/media/";
+    public static final String UPLOAD_URL = "/images";
+
     @Multipart
-    @POST(ApiController.IMAGE)
+    @POST(UPLOAD_URL)
     public void sendImage(@Part("file") TypedFile image, Callback<JsonElement> callback);
 }

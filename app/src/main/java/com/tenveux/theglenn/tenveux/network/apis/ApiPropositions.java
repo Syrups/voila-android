@@ -7,6 +7,7 @@ import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 
 /**
@@ -26,9 +27,9 @@ public interface ApiPropositions {
     @POST(PROPOSITION_SEND)
     public void sendPropostion(@Body Proposition proposition, Callback<JsonElement> callback);
 
-    @GET(PROPOSITION_TAKE)
+    @PUT(PROPOSITION_TAKE)
     public void takePropostion(@Path("id") String id, Callback<JsonElement> callback);
 
-    @GET(PROPOSITION_DIS)
+    @PUT(PROPOSITION_DIS)
     public void dismissPropostion(@Path("id") String id, Callback<JsonElement> callback);
 }

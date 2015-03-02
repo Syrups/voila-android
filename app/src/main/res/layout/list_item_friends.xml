@@ -42,11 +42,45 @@
 
     <com.tenveux.theglenn.tenveux.widget.InertCheckBox
 
+        android:id="@android:id/checkbox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:button="@drawable/checkbox_selector"
-        android:focusable="false" />
+        android:focusable="false"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@android:id/icon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:src="@drawable/ic_three_dots"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/request_buttons_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.5"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/button_friend_no"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/btn_diamond_cross" />
+
+        <Button
+            android:id="@+id/button_friend_yes"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/btn_diamond_bg_cyan" />
+    </LinearLayout>
 
 </com.tenveux.theglenn.tenveux.widget.CheckableLinearLayout>

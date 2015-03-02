@@ -41,6 +41,8 @@ public class ApplicationController extends Application {
     private boolean isUserLoggedIn;
     private String userToken;
 
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -69,7 +71,7 @@ public class ApplicationController extends Application {
                 .setEndpoint(ApiController.BASE_URL)
                 .setConverter(new GsonConverter(gson))
                 .setRequestInterceptor(requestInterceptor)
-                .setClient(new MockClient())
+                        //.setClient(new MockClient())
                 .build();
         //service = restAdapter.create(ApiController.class);
         userService = restAdapter.create(ApiUsers.class);
@@ -121,11 +123,7 @@ public class ApplicationController extends Application {
 
 
     public boolean isUserLoggedIn() {
-        return isUserLoggedIn;
-    }
-
-    public void setIsUserLoggedIn(boolean is) {
-        isUserLoggedIn = is;
+        return userToken != null;
     }
 
     public void setUserToken(String token) {

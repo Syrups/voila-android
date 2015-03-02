@@ -26,7 +26,6 @@ public class User {
     private String token;
 
 
-
     public String getMessage() {
         return message;
     }
@@ -57,6 +56,14 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
 

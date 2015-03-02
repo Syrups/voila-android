@@ -42,6 +42,7 @@ import butterknife.InjectViews;
 import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
@@ -71,10 +72,7 @@ public class LoginActivity extends ActionBarActivity {
     @InjectView(R.id.voila_progress)
     VoilaLoaderImageVIew mLoader;
 
-    /**
-     * Duration of wait *
-     */
-    private final int SPLASH_DISPLAY_LENGTH = 1000;
+
     //private static final String TAG = "FacebookT";
 
     @Override
@@ -94,22 +92,6 @@ public class LoginActivity extends ActionBarActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
 
-
-        /* and close this Splash-Screen after some seconds.*/
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // For scenarios where the main activity is launched and user
-                // session is not null, the session state change notification
-                // may not be triggered. Trigger it if it's open/closed.
-                User user = UserPreferences.getSessionUser();
-                if (user != null) {
-                    goToMain(user);
-                } else {
-                    mLoginButton.setVisibility(View.VISIBLE);
-                }
-            }
-        }, SPLASH_DISPLAY_LENGTH);
     }
 
     @Override
@@ -128,19 +110,28 @@ public class LoginActivity extends ActionBarActivity {
     }
 
 
-    private void goToMain(User user) {
-
+    private void goToMain(final User user) {
         if (user != null) {
-
             UserPreferences.savePreference(user);
             ApplicationController.getInstance().setUserToken(user.getToken());
+            ApplicationController.userApi().findByID(user.getId(), new Callback<User>() {
+                @Override
+                public void success(User userFound, Response response) {
+
+                    userFound.setToken(user.getToken());
+                    UserPreferences.savePreference(userFound);
+
+                    Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    LoginActivity.this.startActivity(mainIntent);
+                    LoginActivity.this.finish();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    error.printStackTrace();
+                }
+            });
         }
-
-        ApplicationController.getInstance().setIsUserLoggedIn(true);
-
-        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-        LoginActivity.this.startActivity(mainIntent);
-        LoginActivity.this.finish();
     }
 
     @OnClick(R.id.login_button)
@@ -156,7 +147,6 @@ public class LoginActivity extends ActionBarActivity {
 
             @Override
             public void success(User u, retrofit.client.Response response) {
-                Log.d("logged", u.getName());
                 goToMain(u);
             }
 
@@ -165,15 +155,11 @@ public class LoginActivity extends ActionBarActivity {
                 if (error.getResponse() != null) {
 
                     User user = (User) error.getBodyAs(User.class);
-
-                    Log.d("ERROR", error.getMessage());
-
                     switch (error.getResponse().getStatus()) {
                         case 409:
                             goToMain(user);
                             return;
                         case 404:
-                            //Log.d("ERROR", gson.toJson(body));
                             error.printStackTrace();
                             return;
                     }

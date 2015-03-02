@@ -1,38 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Tenveux.Widget.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-
         <item name="android:background" tools:ignore="NewApi">@color/red</item>
         <item name="background">@color/red</item>
-
-        <item name="android:colorControlNormal" tools:ignore="NewApi">
-            @color/wallet_holo_blue_light
-        </item>
-
+        <item name="android:colorControlNormal" tools:ignore="NewApi">            @color/cyan</item>
     </style>
 
     <style name="Tenveux.Widget.ActionBar.NOActionBar">
-
         <item name="android:windowActionBar" tools:ignore="NewApi">false</item>
         <item name="windowActionBar">false</item>
-
     </style>
 
     <!-- ACTION BAR STYLES -->
     <style name="Tenveux.Widget.ActionBar.overlay">
-
         <item name="android:windowActionBarOverlay" tools:ignore="NewApi">true</item>
         <item name="windowActionBarOverlay">true</item>
-
         <item name="colorPrimary">@android:color/transparent</item>
-
     </style>
-
 
     <style name="Tenveux.Widget.ActionBar.Transparent">
         <item name="android:background">@android:color/transparent</item>
     </style>
-
 
     <style name="ButtonBigStyle">
         <item name="fontPath">fonts/SansitaOne.ttf</item>
@@ -45,5 +34,21 @@
         <item name="android:windowExitAnimation">@anim/slide_down</item>
     </style>
 
+    <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">@style/ButtonBar</item>
+        <item name="metaButtonBarButtonStyle">@style/ButtonBarButton</item>
+    </style>
+
+    <style name="ButtonBar">
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingRight">2dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:background">@android:drawable/bottom_bar</item>
+    </style>
+
+    <style name="ButtonBarButton" />
 
 </resources>

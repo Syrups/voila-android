@@ -8,8 +8,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.view.View;
 
+import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
 import com.tenveux.theglenn.tenveux.network.ApiController;
+import com.tenveux.theglenn.tenveux.network.OffApiController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,8 +37,8 @@ public class Utils {
         return "https://graph.facebook.com/" + user.getId() + "/picture?type=large";
     }
 
-    public static String getPropositionMediaUrl(User user) {
-        return "https://graph.facebook.com/" + user.getId() + "/picture?type=large";
+    public static String getPropositionMediaUrl(Proposition p) {
+        return OffApiController.MEDIA_URL + p.getImage();
     }
 
     public static String getImage2(String url) throws URISyntaxException {

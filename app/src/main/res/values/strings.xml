@@ -15,5 +15,11 @@
     <string name="ten_veux">"T\'en veux ?"</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_sign_in">SignIn</string>
+    <string name="title_activity_network">NetworkActivity</string>
+    <string name="action_friends">Friends</string>
+    <string name="title_activity_friend_search_request">FriendSearchRequestActivity</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

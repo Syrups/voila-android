@@ -20,7 +20,7 @@
         <item name="windowActionBarOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
 
-        <item name="colorControlNormal">@color/wallet_holo_blue_light</item>
+        <item name="colorControlNormal">@color/cyan</item>
         <item name="colorPrimary">@android:color/transparent</item>
 
         <item name="android:displayOptions" tools:ignore="NewApi">showHome|useLogo</item>

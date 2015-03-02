@@ -6,7 +6,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.SeekBar;
 
@@ -31,6 +33,20 @@ public class VoilaSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeList
 
     private OnVoilaSeekBarChangeListener mListner;
     ObjectAnimator animation;
+
+    private DisplayMetrics displayMetrics;
+
+    /**
+     * Converts a given dip (density independent pixel) value to its corresponding pixel value.
+     *
+     * @param dips The dip value to convert, as float.
+     * @return The pixel value, as int.
+     */
+    private int dipToPix(float dips) {
+        if (displayMetrics == null)
+            displayMetrics = getResources().getDisplayMetrics();
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dips, displayMetrics);
+    }
 
     public VoilaSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -103,7 +119,8 @@ public class VoilaSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeList
 
         float halfHeight = (canvas.getHeight() + paddingTop) * .5f;
         float dotHeight = halfHeight / 3.5f;
-        radius = (dotHeight * .5f) * scale;
+        radius = dipToPix(dotHeight * .5f);
+        //* scale;
 
         int numberOfDots = 15;
         raster = getMax() / numberOfDots;

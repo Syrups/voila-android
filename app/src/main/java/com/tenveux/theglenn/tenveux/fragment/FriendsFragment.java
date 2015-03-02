@@ -134,6 +134,7 @@ public class FriendsFragment extends DialogFragment {
 
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_fragment_friends, null);
         adapter = new FriendsArrayApdater(getActivity(), R.layout.list_item_friends, this.users);
+        adapter.setSendMode(FriendsArrayApdater.SEND_MODE);
 
         ButterKnife.inject(this, v);
 
@@ -190,14 +191,14 @@ public class FriendsFragment extends DialogFragment {
 
         // For each element in the status array
         int checkedItemsCount = checkedItems.size();
-        final List<String> userIds = new ArrayList<String>();
+        final List<User> userIds = new ArrayList<User>();
 
         for (int i = 0; i < checkedItemsCount; ++i) {
             // This tells us the item position we are looking at
             final int position = checkedItems.keyAt(i);
 
             User user = users.get(position);
-            userIds.add(user.getId());
+            userIds.add(user);
         }
 
         User sessionUser = UserPreferences.getSessionUser();

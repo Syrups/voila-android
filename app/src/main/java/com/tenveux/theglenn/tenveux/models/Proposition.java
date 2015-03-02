@@ -18,7 +18,10 @@ public class Proposition {
     private User sender;
 
     @Expose
-    private List<String> receivers = new ArrayList<String>();
+    private List<String> allReceivers = new ArrayList<String>();
+
+    @Expose
+    private List<User> receivers = new ArrayList<User>();
 
     @Expose
     private String sentAt;
@@ -55,11 +58,11 @@ public class Proposition {
     }
 
 
-    public List<String> getReceivers() {
+    public List<User> getReceivers() {
         return receivers;
     }
 
-    public void setReceivers(List<String> receivers) {
+    public void setReceivers(List<User> receivers) {
         this.receivers = receivers;
     }
 

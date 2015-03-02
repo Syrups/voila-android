@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.tenveux.theglenn.tenveux.activities.menu.friends.NetworkActivity">
+    <item
+        android:id="@+id/action_friend_requests"
+        app:actionLayout="@layout/menu_item_badge"
+        android:orderInCategory="100"
+        android:title="@string/action_friends"
+        app:showAsAction="always" />
+</menu>

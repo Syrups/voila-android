@@ -28,11 +28,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.NavigationDrawerFragment;
 import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.UserPreferences;
+import com.tenveux.theglenn.tenveux.activities.menu.friends.NetworkActivity;
 import com.tenveux.theglenn.tenveux.camera.CameraPreview;
 import com.tenveux.theglenn.tenveux.fragment.FriendsFragment;
 import com.tenveux.theglenn.tenveux.models.Proposition;
@@ -60,7 +64,10 @@ public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, FriendsFragment.FrienSelectedListner {
 
     private static final int badgeColor = Color.parseColor("#df006e");
-    private final int SELECT_PHOTO = 1;
+    private final int SELECT_PHOTO = 2567;
+
+    JsonArray mPropositons;
+    JsonArray mAnswers;
 
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
@@ -82,6 +89,9 @@ public class MainActivity extends ActionBarActivity
 
     @InjectView(R.id.image_preview)
     ImageView mPickedImage;
+
+
+    private int numberOfFriendRequest;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -113,9 +123,6 @@ public class MainActivity extends ActionBarActivity
             Log.d("taken", data.length + " / ");
         }
     };
-
-    private List<Proposition> mPropositons;
-
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -154,18 +161,17 @@ public class MainActivity extends ActionBarActivity
         User u = UserPreferences.getSessionUser();
 
         if (u != null) {
-            //TODO switch with PENDINGS
-            ApplicationController.userApi().getPendingProposition(u.getId(), new Callback<List<Proposition>>() {
-                @Override
-                public void success(List<Proposition> propositions, Response response) {
 
-                    mPropositons = propositions;
+            String id = u.getId();
+
+            ApplicationController.userApi().pendingall(id, new Callback<JsonObject>() {
+                @Override
+                public void success(JsonObject jsonObject, Response response) {
+
+                    mAnswers = jsonObject.get("answers").getAsJsonArray();
+                    mPropositons = jsonObject.get("propositions").getAsJsonArray();
 
                     MainActivity.this.invalidateOptionsMenu();
-                    //Log.d("success", "getReceivedPropostion");
-                    for (Proposition p : propositions) {
-                        Log.i("propostion", p.getImage());
-                    }
                 }
 
                 @Override
@@ -173,6 +179,19 @@ public class MainActivity extends ActionBarActivity
                     error.printStackTrace();
                 }
             });
+
+            ApplicationController.userApi().requests(id, new Callback<List<User>>() {
+                @Override
+                public void success(List<User> users, Response response) {
+                    numberOfFriendRequest = users.size() - 1;
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+
         } else {
             Log.e("User", "none");
         }
@@ -325,12 +344,19 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
 
+        Intent menuIntent = null;
+
         switch (position) {
             case 0:
                 break;
             case 1:
+                menuIntent = new Intent(this, NetworkActivity.class);
+                menuIntent.putExtra("numberOfFriendRequest", numberOfFriendRequest);
                 break;
         }
+
+        if (menuIntent != null)
+            startActivity(menuIntent);
     }
 
     public void onSectionAttached(int number) {
@@ -356,7 +382,7 @@ public class MainActivity extends ActionBarActivity
         MenuItem item = menu.findItem(R.id.action_go_propositions);
 
         if (item != null)
-            if (mPropositons != null && mPropositons.size() > 0) {
+            if ((mPropositons != null && mPropositons.size() > 0) || (mAnswers != null && mAnswers.size() > 0)) {
                 item.setIcon(R.drawable.ic_menu_received_notif);
             } else {
                 item.setIcon(R.drawable.ic_menu_received);
@@ -462,7 +488,7 @@ public class MainActivity extends ActionBarActivity
         mLoadButton.setVisibility(View.GONE);
         switchCameraButton.setVisibility(View.GONE);
 
-        if (withCamera) {
+        if (!withCamera) {
             mPickedImage.setVisibility(View.VISIBLE);
             mPickedImage.setImageBitmap(this.photoToSend);
         }
@@ -477,9 +503,7 @@ public class MainActivity extends ActionBarActivity
         public void onClick(View v) {
 
             File imageFileFolder = new File(getCacheDir(), "Image");
-            if (!imageFileFolder.exists())
-
-            {
+            if (!imageFileFolder.exists()){
                 imageFileFolder.mkdir();
             }
 
@@ -541,6 +565,4 @@ public class MainActivity extends ActionBarActivity
             }
         }
     };
-
-
 }

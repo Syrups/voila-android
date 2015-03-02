@@ -11,14 +11,21 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.DepthPageTransformer;
 import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.UserPreferences;
+import com.tenveux.theglenn.tenveux.models.Answer;
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
 import com.tenveux.theglenn.tenveux.widget.PropositionPagerAdapter;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -28,7 +35,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class PropositionsActivity extends ActionBarActivity  {
+public class PropositionsActivity extends ActionBarActivity {
 
     @InjectView(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -36,6 +43,9 @@ public class PropositionsActivity extends ActionBarActivity  {
     @InjectView(R.id.pager)
     ViewPager mViewPager;
     PropositionPagerAdapter mPagerAdapter;
+
+    List<Object> mAnswersAndPropostion;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +63,29 @@ public class PropositionsActivity extends ActionBarActivity  {
         mViewPager.setPageTransformer(true, new DepthPageTransformer());
 
         if (u != null)
-            ApplicationController.userApi().getPendingProposition(u.getId(), new Callback<List<Proposition>>() {
+            //TODO switch with PENDINGS
+            ApplicationController.userApi().pendingall(u.getId(), new Callback<JsonObject>() {
                 @Override
-                public void success(List<Proposition> propositions, Response response) {
+                public void success(JsonObject jsonObject, Response response) {
 
-                    Log.d("succes", new Gson().toJson(propositions));
-                    mPagerAdapter = new PropositionPagerAdapter(getSupportFragmentManager(), propositions);
+                    JsonArray answers = jsonObject.get("answers").getAsJsonArray();
+                    JsonArray propositions = jsonObject.get("propositions").getAsJsonArray();
+
+                    //TODO directly pass jsonObject
+                    mAnswersAndPropostion = new ArrayList<>();
+
+                    for (JsonElement p : propositions) {
+                        Proposition prop = new Gson().fromJson(p.toString(), Proposition.class);
+                        mAnswersAndPropostion.add(prop);
+                    }
+
+                    //TODO : answers
+                    for (JsonElement a : answers) {
+                        Answer ans = new Gson().fromJson(a.toString(), Answer.class);
+                        mAnswersAndPropostion.add(ans);
+                    }
+
+                    mPagerAdapter = new PropositionPagerAdapter(getSupportFragmentManager(), mAnswersAndPropostion);
                     mViewPager.setAdapter(mPagerAdapter);
 
                     mProgressBar.setVisibility(View.GONE);
@@ -70,6 +97,7 @@ public class PropositionsActivity extends ActionBarActivity  {
                     error.printStackTrace();
                 }
             });
+
     }
 
     @Override
@@ -98,9 +126,8 @@ public class PropositionsActivity extends ActionBarActivity  {
     }
 
 
-    public void removeProposition(Proposition proposition) {
-        mPagerAdapter.remove(proposition);
+    public void removeProposition(Object wrapper) {
+        mPagerAdapter.remove(wrapper);
     }
-
 
 }

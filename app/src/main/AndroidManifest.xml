@@ -18,46 +18,49 @@
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
-
         android:label="@string/app_name">
-
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".activities.PropositionsActivity"
             android:label="@string/title_activity_propositions"
             android:screenOrientation="portrait"
-            android:theme="@style/TenveuxTheme.TranslucentActionBar.Overlay">
-
-        </activity>
-
+            android:theme="@style/TenveuxTheme.TranslucentActionBar.Overlay" />
         <activity
             android:name=".activities.home.SignIn"
             android:label="@string/title_activity_sign_in"
             android:theme="@style/TenveuxTheme.TranslucentActionBar.Overlay"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-
         <activity
             android:name=".activities.home.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/TenveuxTheme.TranslucentActionBar.Overlay"
             android:windowSoftInputMode="stateVisible|adjustPan" />
-
         <activity
             android:name=".activities.home.HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".activities.menu.friends.NetworkActivity"
+            android:label="@string/title_activity_network"
+            android:theme="@style/TenveuxTheme.TranslucentActionBar.Overlay" />
+        <activity
+            android:name=".activities.menu.friends.FriendSearchRequestActivity"
+            android:label="@string/title_activity_friend_search_request"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".activities.SplashScreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullscreenTheme">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 

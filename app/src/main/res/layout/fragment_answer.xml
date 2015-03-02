@@ -1,0 +1,133 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tenveux.theglenn.tenveux.fragment.PropositionFragment">
+
+
+    <ImageView
+        android:id="@android:id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/dummy_proposition" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+
+        <View
+            android:id="@+id/layout_status_fading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/translucent_black" />
+
+
+        <include
+            android:id="@+id/taken_layout"
+            layout="@layout/view_layout_taken"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:layout_toLeftOf="@+id/imageView5"
+                android:layout_toStartOf="@+id/imageView5"
+                android:orientation="vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="60dp"
+                    android:layout_height="@dimen/abc_action_bar_default_height_material"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/glenn"
+                    app:border_color="@android:color/white"
+                    app:border_width="1dp" />
+
+                <TextView
+                    android:id="@android:id/text1"
+                    fontPath="fonts/JosefinSansStd-Light.otf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Léonard"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_friends_select_middle" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_toEndOf="@+id/imageView5"
+                android:layout_toRightOf="@+id/imageView5"
+                android:orientation="vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/avatar_receiver"
+                    android:layout_width="60dp"
+                    android:layout_height="@dimen/abc_action_bar_default_height_material"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/glenn"
+                    app:border_color="@android:color/white"
+                    app:border_width="1dp" />
+
+                <TextView
+                    android:id="@android:id/text1"
+                    fontPath="fonts/JosefinSansStd-Light.otf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Léonard"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/text_status_fading"
+            fontPath="fonts/SansitaOne.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="j'en prends !"
+            android:textColor="@color/cyan"
+            android:textSize="40sp"
+            android:visibility="invisible" />
+
+
+        <ImageView
+            android:id="@+id/took_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/text_status_fading"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_took_logo"
+            android:visibility="invisible" />
+    </RelativeLayout>
+</FrameLayout>

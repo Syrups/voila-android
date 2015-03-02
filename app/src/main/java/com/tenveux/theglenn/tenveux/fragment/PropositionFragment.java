@@ -27,21 +27,25 @@ import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.UserPreferences;
 import com.tenveux.theglenn.tenveux.Utils;
 import com.tenveux.theglenn.tenveux.activities.PropositionsActivity;
+import com.tenveux.theglenn.tenveux.models.Answer;
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
+import com.tenveux.theglenn.tenveux.widget.PropositionPagerAdapter;
 import com.tenveux.theglenn.tenveux.widget.VoilaSeekBar;
 
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class PropositionFragment extends Fragment implements FriendsFragment.FrienSelectedListner{
+public class PropositionFragment extends Fragment implements FriendsFragment.FrienSelectedListner {
 
     final static float END_SCALE = 1.2f;
 
@@ -72,10 +76,12 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
     @InjectView(R.id.avatar)
     CircleImageView mAvatar;
 
+    @Optional
     @InjectView(R.id.seekBar)
     VoilaSeekBar mSwitchBar;
 
     Proposition mProposition;
+    Answer mAnswer;
 
 
     /**
@@ -89,6 +95,34 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         fragment.mProposition = proposition;
         return fragment;
     }
+
+    public static PropositionFragment newInstance(Answer answer) {
+        PropositionFragment fragment = new PropositionFragment();
+        fragment.mAnswer = answer;
+        return fragment;
+    }
+
+    public static PropositionFragment newInstance(PropositionPagerAdapter.PropositionAnswerWrapper wrapper) {
+        PropositionFragment fragment = new PropositionFragment();
+
+        fragment.mAnswer = wrapper.answer;
+        fragment.mProposition = wrapper.proposition;
+
+        return fragment;
+    }
+
+    public static PropositionFragment newInstance(Object wrapper) {
+        PropositionFragment fragment = new PropositionFragment();
+
+        if (wrapper instanceof Answer) {
+            fragment.mAnswer = (Answer) wrapper;
+        } else {
+            fragment.mProposition = (Proposition) wrapper;
+        }
+
+        return fragment;
+    }
+
 
     public PropositionFragment() {
         // Required empty public constructor
@@ -105,33 +139,34 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View v = getActivity().getLayoutInflater().inflate(R.layout.fragment_proposition, container, false);
+        boolean propMode = this.mProposition != null;
+        int layout = propMode ? R.layout.fragment_proposition : R.layout.fragment_answer;
+        View v = getActivity().getLayoutInflater().inflate(layout, container, false);
 
         ButterKnife.inject(this, v);
 
-        String imageURl = null;
-        try {
-            imageURl = Utils.getImage2(mProposition.getImage());
-            //title.setText(imageURl);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        //Load Background
+        final String imageURl = Utils.getPropositionMediaUrl(propMode ? mProposition : mAnswer.getProposition());
         Picasso.with(getActivity()).load(imageURl).into(mImage, new Callback() {
             @Override
             public void onSuccess() {
-                Log.d("Picasso", "done");
+                Log.d("Picasso", "done -> " + imageURl);
             }
 
             @Override
             public void onError() {
-                Log.d("Picasso", "error");
+                Log.d("Picasso", "error ->" + imageURl);
             }
         });
 
-        //TODO : Load Avatar
 
+        return v;
+    }
+
+    void initProposition() {
+        //Load : Background
+
+
+        //TODO : Load Avatar
         /*Picasso.with(getActivity())
                 .load()
                 .resize(50, 50)
@@ -144,12 +179,11 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         Spanned phrase = Html.fromHtml("<b>" + name + "</b> : " + "<i>" + tenveux + "</i>");
 
         text.setText(phrase);
-
-
         this.setupSwitch();
+    }
 
+    void initAnswer() {
 
-        return v;
     }
 
 
@@ -264,6 +298,10 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         mTakenLayout.setVisibility(View.VISIBLE);
     }
 
+    void showDismissDialog() {
+
+    }
+
 
     void takeProposition() {
 
@@ -286,14 +324,12 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         ApplicationController.propositionApi().takePropostion(mProposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
-                Log.d("take", response.getBody().toString());
                 showDialog();
                 //((PropositionsActivity) getActivity()).removeProposition(proposition);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e("TakeError", error.getMessage());
                 error.printStackTrace();
             }
         });
@@ -303,13 +339,12 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         ApplicationController.propositionApi().dismissPropostion(mProposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
-                Log.d("dismiss", response.getBody().toString());
+                showDismissDialog();
                 //((PropositionsActivity) getActivity()).removeProposition(proposition);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e("DisError", error.getMessage());
                 error.printStackTrace();
             }
         });
@@ -343,41 +378,6 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
 
             }
         });
-       /* final Session session = Session.getActiveSession();
-
-        if (session != null) {
-            Log.d("sessiion", session.getState().isOpened() + "");
-            if (session.getState().isOpened()) {
-                //TODO : SHOW FRIEND LIST !!!!!
-                Log.d("users", "launch");
-
-                Request.newMyFriendsRequest(session, new Request.GraphUserListCallback() {
-                    @Override
-                    public void onCompleted(List<GraphUser> users, com.facebook.Response response) {
-
-                        Log.d("users", "done");
-                        for (GraphUser u : users) {
-                            Log.d("users", u.getName());
-                        }
-                        // DialogFragment.show() will take care of adding the fragment
-                        // in a transaction.  We also want to remove any currently showing
-                        // dialog, so make our own transaction and take care of that here.
-                        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-
-                        Dial prev = getFragmentManager().findFragmentByTag("dialog");
-                        if (prev != null) {
-                            ft.remove(prev);
-                        }
-
-                        ft.addToBackStack(null);
-
-                        // Create and show the dialog.
-                        FriendsFragment newFragment = FriendsFragment.newInstance(users, imagetoSend);
-                        newFragment.show(ft, "dialog");
-                    }
-                }).executeAsync();
-            }
-        }*/
     }
 
     @OnClick(R.id.button_ok)
