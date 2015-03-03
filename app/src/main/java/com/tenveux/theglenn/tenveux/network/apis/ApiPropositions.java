@@ -40,7 +40,12 @@ public interface ApiPropositions {
     public void popular(Callback<List<Proposition>> callback);
 
 
-    //Answer
-    @GET("/answers/{id}/acknowledge")
+    /**
+     * Answers API
+     *
+     * @param id
+     * @param callback
+     */
+    @PUT("/answers/{id}/acknowledge")
     public void acknowledge(@Path("id") String id, Callback<JsonElement> callback);
 }

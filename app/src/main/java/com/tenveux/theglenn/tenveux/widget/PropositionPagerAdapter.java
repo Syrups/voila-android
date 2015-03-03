@@ -25,32 +25,14 @@ public class PropositionPagerAdapter extends FragmentStatePagerAdapter {
 
     public PropositionPagerAdapter(FragmentManager supportFragmentManager, List<Object> propositionAndAnswers) {
         super(supportFragmentManager);
-
-        //Type listType = new TypeToken<List<Proposition>>() {}.getType();
-        //mPropositons = new Gson().fromJson(propositions, listType);
-
+        
         this.propositionAndAnswers = propositionAndAnswers;
-
-        /*for (Proposition p : propositions) {
-            PropositionAnswerWrapper wrapper = new PropositionAnswerWrapper();
-            wrapper.proposition = p;
-            propositionAndAnswers.add(wrapper);
-
-        }
-
-        for (Answer a : answers) {
-            PropositionAnswerWrapper wrapper = new PropositionAnswerWrapper();
-            wrapper.answer = a;
-            propositionAndAnswers.add(wrapper);
-
-        }*/
     }
 
     @Override
     public Fragment getItem(int position) {
         Object wrapper = propositionAndAnswers.get(position);
         return PropositionFragment.newInstance(wrapper);
-
 
     }
 
@@ -65,15 +47,34 @@ public class PropositionPagerAdapter extends FragmentStatePagerAdapter {
     }
 
 
-    public void remove(Object wrapper) {
-        int position = propositionAndAnswers.indexOf(wrapper);
+    public void remove(Proposition p) {
+        int position = propositionAndAnswers.indexOf(p);
         propositionAndAnswers.remove(position);
         this.notifyDataSetChanged();
     }
 
-    public class PropositionAnswerWrapper {
-        public Proposition proposition;
-        public Answer answer;
+    public void remove(Answer a) {
+        int position = propositionAndAnswers.indexOf(a);
+        propositionAndAnswers.remove(position);
+        this.notifyDataSetChanged();
+    }
 
+
+    private int indexOf(Object of) {
+        int i = 0;
+        if (of != null)
+            for (Object o : propositionAndAnswers) {
+                if (of instanceof Proposition) {
+                    if (((Proposition) o).getId().equals(((Proposition) o).getId())) {
+                        return i;
+                    }
+                } else if (of instanceof Answer) {
+                    if (((Answer) o).getId().equals(((Answer) o).getId())) {
+                        return i;
+                    }
+                }
+                i++;
+            }
+        return -1;
     }
 }

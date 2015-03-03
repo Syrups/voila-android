@@ -73,13 +73,15 @@ public class PropositionsActivity extends ActionBarActivity {
                     JsonArray answers = jsonObject.get("answers").getAsJsonArray();
                     JsonArray propositions = jsonObject.get("propositions").getAsJsonArray();
 
-                    //TODO directly pass jsonObject
+                    // Type listType = new TypeToken<List<Proposition>>() {}.getType();
+                    //mPropositons = new Gson().fromJson(propositions, listType);
                     mAnswersAndPropostion = new ArrayList<>();
 
                     for (JsonElement p : propositions) {
                         Proposition prop = new Gson().fromJson(p.toString(), Proposition.class);
                         mAnswersAndPropostion.add(prop);
                     }
+
 
                     //TODO : answers
                     for (JsonElement a : answers) {
@@ -131,9 +133,13 @@ public class PropositionsActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public void removeProposition(Object wrapper) {
+    public void removeProposition(Proposition wrapper) {
         mPagerAdapter.remove(wrapper);
     }
+
+    public void removeAnswer(Answer wrapper) {
+        mPagerAdapter.remove(wrapper);
+    }
+
 
 }

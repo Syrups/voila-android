@@ -419,7 +419,7 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
 
     @OnClick(R.id.button_ok)
     void nextProposition() {
-        if (!mPropMode) {
+        if (mPropMode) {
             ((PropositionsActivity) getActivity()).removeProposition(mProposition);
         } else {
             ApplicationController.propositionApi().acknowledge(mAnswer.getId(), new retrofit.Callback<JsonElement>() {
@@ -434,7 +434,7 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
                 }
             });
 
-            ((PropositionsActivity) getActivity()).removeProposition(mAnswer);
+            ((PropositionsActivity) getActivity()).removeAnswer(mAnswer);
         }
     }
 
