@@ -8,6 +8,9 @@ import com.google.gson.annotations.Expose;
 public class Answer {
 
     @Expose
+    private String id;
+
+    @Expose
     private Proposition proposition;
 
     @Expose
@@ -19,6 +22,14 @@ public class Answer {
     @Expose
     private String answer;
 
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Proposition getProposition() {
         return proposition;

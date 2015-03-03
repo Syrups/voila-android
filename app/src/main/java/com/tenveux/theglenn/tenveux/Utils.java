@@ -10,19 +10,13 @@ import android.view.View;
 
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
-import com.tenveux.theglenn.tenveux.network.ApiController;
+import com.tenveux.theglenn.tenveux.network.Api;
 import com.tenveux.theglenn.tenveux.network.OffApiController;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * Created by theGlenn on 13/10/2014.
@@ -43,7 +37,7 @@ public class Utils {
 
     public static String getImage2(String url) throws URISyntaxException {
         URI uri = new URI(url);
-        String domain = ApiController.BASE_IMG + uri.getRawPath();
+        String domain = Api.BASE_IMG + uri.getRawPath();
         return domain;
     }
 

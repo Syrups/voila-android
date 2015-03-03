@@ -5,8 +5,9 @@ import android.app.Application;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tenveux.theglenn.tenveux.models.Proposition;
+import com.tenveux.theglenn.tenveux.models.data.PropositionDeserializer;
 import com.tenveux.theglenn.tenveux.models.data.PropositionSerializer;
-import com.tenveux.theglenn.tenveux.network.ApiController;
+import com.tenveux.theglenn.tenveux.network.Api;
 import com.tenveux.theglenn.tenveux.network.OffApiController;
 import com.tenveux.theglenn.tenveux.network.apis.ApiPropositions;
 import com.tenveux.theglenn.tenveux.network.apis.ApiUsers;
@@ -33,14 +34,11 @@ public class ApplicationController extends Application {
      * A singleton instance of the application class for easy access in other places
      */
     private static ApplicationController sInstance;
-    private ApiController service;
     private OffApiController offService;
     private ApiUsers userService;
     private ApiPropositions propoService;
 
-    private boolean isUserLoggedIn;
     private String userToken;
-
 
 
     @Override
@@ -63,12 +61,13 @@ public class ApplicationController extends Application {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Proposition.class, new PropositionSerializer()) // This is the important line ;)
+                .registerTypeAdapter(Proposition.class, new PropositionDeserializer())
                 .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
                 .create();
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint(ApiController.BASE_URL)
+                .setEndpoint(Api.BASE_URL)
                 .setConverter(new GsonConverter(gson))
                 .setRequestInterceptor(requestInterceptor)
                         //.setClient(new MockClient())
@@ -80,7 +79,7 @@ public class ApplicationController extends Application {
 
         RestAdapter offAdapter = new RestAdapter.Builder()
                 .setRequestInterceptor(requestInterceptor)
-                .setEndpoint(ApiController.BASE)
+                .setEndpoint(Api.BASE)
                 .setClient(new MockClient())
                 .build();
         offService = offAdapter.create(OffApiController.class);
@@ -112,15 +111,9 @@ public class ApplicationController extends Application {
         return sInstance.propoService;
     }
 
-    public static ApiController api() {
-        return sInstance.service;
-    }
-
-
     public static OffApiController offApi() {
         return sInstance.offService;
     }
-
 
     public boolean isUserLoggedIn() {
         return userToken != null;

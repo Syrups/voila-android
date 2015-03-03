@@ -1,7 +1,6 @@
 package com.tenveux.theglenn.tenveux.network;
 
 import com.google.gson.JsonElement;
-import com.tenveux.theglenn.tenveux.network.ApiController;
 
 import retrofit.Callback;
 import retrofit.http.Multipart;
@@ -14,7 +13,7 @@ import retrofit.mime.TypedFile;
  */
 public interface OffApiController {
 
-    public static final String MEDIA_URL = ApiController.BASE + "/media/";
+    public static final String MEDIA_URL = Api.BASE + "/media/";
     public static final String UPLOAD_URL = "/images";
 
     @Multipart

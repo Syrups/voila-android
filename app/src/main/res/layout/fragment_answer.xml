@@ -24,19 +24,16 @@
             android:id="@+id/layout_status_fading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/translucent_black" />
-
-
-        <include
-            android:id="@+id/taken_layout"
-            layout="@layout/view_layout_taken"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:layout_below="@+id/relativeLayout"
+            android:background="@color/translucent_black"
+            android:visibility="invisible" />
 
         <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/translucent_black"
+            android:paddingBottom="15dp">
 
 
             <LinearLayout
@@ -53,12 +50,13 @@
                     android:layout_width="60dp"
                     android:layout_height="@dimen/abc_action_bar_default_height_material"
                     android:layout_gravity="center_horizontal"
+
                     android:src="@drawable/glenn"
                     app:border_color="@android:color/white"
                     app:border_width="1dp" />
 
                 <TextView
-                    android:id="@android:id/text1"
+                    android:id="@+id/user_name"
                     fontPath="fonts/JosefinSansStd-Light.otf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -90,12 +88,13 @@
                     android:layout_width="60dp"
                     android:layout_height="@dimen/abc_action_bar_default_height_material"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
                     android:src="@drawable/glenn"
                     app:border_color="@android:color/white"
                     app:border_width="1dp" />
 
                 <TextView
-                    android:id="@android:id/text1"
+                    android:id="@+id/sender_name"
                     fontPath="fonts/JosefinSansStd-Light.otf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -119,6 +118,22 @@
             android:textColor="@color/cyan"
             android:textSize="40sp"
             android:visibility="invisible" />
+
+
+        <Button
+            android:id="@+id/button_ok"
+            fontPath="fonts/SansitaOne.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_below="@+id/text_status_fading"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="64dp"
+            android:background="@drawable/btn_rounded_border_white"
+            android:minWidth="70dp"
+            android:text="ok !"
+            android:textColor="@android:color/white"
+            android:visibility="invisible"
+            />
 
 
         <ImageView

@@ -3,6 +3,7 @@ package com.tenveux.theglenn.tenveux.fragment;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
@@ -49,39 +50,60 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
 
     final static float END_SCALE = 1.2f;
 
-    @InjectView(android.R.id.text1)
-    TextView text;
+    @Optional
+    @InjectView(R.id.taken_layout)
+    ViewGroup mTakenLayout;
 
     @InjectView(R.id.text_status_fading)
     TextView statusText;
 
-    @InjectView(R.id.taken_layout)
-    ViewGroup mTakenLayout;
-
-    @InjectView(R.id.took_logo)
-    ImageView mTookLogo;
+    @InjectView(R.id.layout_status_fading)
+    View fadingView;
 
     @InjectView(android.R.id.background)
     ImageView mImage;
 
-    @InjectView(R.id.layout_status_fading)
-    View fadingView;
 
-   /* @InjectView(R.id.button_ok)
-    Button buttonOk;
+    @Optional
+    @InjectView(R.id.took_logo)
+    ImageView mTookLogo;
 
+
+    @Optional
+    @InjectView(android.R.id.text1)
+    TextView text;
+
+    @Optional
+    @InjectView(R.id.sender_name)
+    TextView fromName;
+
+    @Optional
+    @InjectView(R.id.user_name)
+    TextView toName;
+
+    @Optional
     @InjectView(R.id.button_resend)
-    Button buttonRe;*/
+    Button buttonRe;
 
     @InjectView(R.id.avatar)
     CircleImageView mAvatar;
 
     @Optional
+    @InjectView(R.id.avatar_receiver)
+    CircleImageView mAvatarReceiver;
+
+    @Optional
     @InjectView(R.id.seekBar)
     VoilaSeekBar mSwitchBar;
 
+    @Optional
+    @InjectView(R.id.button_ok)
+    Button buttonOk;
+
+
     Proposition mProposition;
     Answer mAnswer;
+    boolean mPropMode;
 
 
     /**
@@ -89,27 +111,6 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
      *
      * @return A new instance of fragment PropositionFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static PropositionFragment newInstance(Proposition proposition) {
-        PropositionFragment fragment = new PropositionFragment();
-        fragment.mProposition = proposition;
-        return fragment;
-    }
-
-    public static PropositionFragment newInstance(Answer answer) {
-        PropositionFragment fragment = new PropositionFragment();
-        fragment.mAnswer = answer;
-        return fragment;
-    }
-
-    public static PropositionFragment newInstance(PropositionPagerAdapter.PropositionAnswerWrapper wrapper) {
-        PropositionFragment fragment = new PropositionFragment();
-
-        fragment.mAnswer = wrapper.answer;
-        fragment.mProposition = wrapper.proposition;
-
-        return fragment;
-    }
 
     public static PropositionFragment newInstance(Object wrapper) {
         PropositionFragment fragment = new PropositionFragment();
@@ -139,13 +140,13 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        boolean propMode = this.mProposition != null;
-        int layout = propMode ? R.layout.fragment_proposition : R.layout.fragment_answer;
+        mPropMode = this.mProposition != null;
+        int layout = mPropMode ? R.layout.fragment_proposition : R.layout.fragment_answer;
         View v = getActivity().getLayoutInflater().inflate(layout, container, false);
 
         ButterKnife.inject(this, v);
 
-        final String imageURl = Utils.getPropositionMediaUrl(propMode ? mProposition : mAnswer.getProposition());
+        final String imageURl = Utils.getPropositionMediaUrl(mPropMode ? mProposition : mAnswer.getProposition());
         Picasso.with(getActivity()).load(imageURl).into(mImage, new Callback() {
             @Override
             public void onSuccess() {
@@ -158,6 +159,12 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
             }
         });
 
+
+        if (mPropMode) {
+            this.initProposition();
+        } else {
+            this.initAnswer(v);
+        }
 
         return v;
     }
@@ -182,8 +189,37 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         this.setupSwitch();
     }
 
-    void initAnswer() {
+    void initAnswer(View v) {
 
+        User from = this.mAnswer.getFrom();
+        User to = this.mAnswer.getTo();
+         /*Picasso.with(getActivity())
+                .load(to.getAvatar())
+                .resize(50, 50)
+                .centerCrop()
+                .into(mAvatar);
+         Picasso.with(getActivity())
+                .load(from.getAvatar())
+                .resize(50, 50)
+                .centerCrop()
+                .into(mAvatar);*/
+
+        fromName.setText(from.getName());
+        toName.setText(to.getName());
+
+        int colorRes = this.mAnswer.isYes() ? R.color.cyan : R.color.red;
+        int color = getResources().getColor(colorRes);
+
+        statusText.setTextColor(color);
+
+        v.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fadingView.setVisibility(View.VISIBLE);
+                statusText.setVisibility(View.VISIBLE);
+                buttonOk.setVisibility(View.VISIBLE);
+            }
+        }, 500);
     }
 
 
@@ -350,6 +386,7 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         });
     }
 
+    @Optional
     @OnClick(R.id.button_resend)
     void bounceProposition() {
 
@@ -382,7 +419,23 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
 
     @OnClick(R.id.button_ok)
     void nextProposition() {
-        ((PropositionsActivity) getActivity()).removeProposition(mProposition);
+        if (!mPropMode) {
+            ((PropositionsActivity) getActivity()).removeProposition(mProposition);
+        } else {
+            ApplicationController.propositionApi().acknowledge(mAnswer.getId(), new retrofit.Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    error.printStackTrace();
+                }
+            });
+
+            ((PropositionsActivity) getActivity()).removeProposition(mAnswer);
+        }
     }
 
     @Override

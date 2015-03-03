@@ -37,6 +37,7 @@ import com.tenveux.theglenn.tenveux.NavigationDrawerFragment;
 import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.UserPreferences;
 import com.tenveux.theglenn.tenveux.activities.menu.friends.NetworkActivity;
+import com.tenveux.theglenn.tenveux.activities.menu.profile.ProfileActivity;
 import com.tenveux.theglenn.tenveux.camera.CameraPreview;
 import com.tenveux.theglenn.tenveux.fragment.FriendsFragment;
 import com.tenveux.theglenn.tenveux.models.Proposition;
@@ -353,6 +354,12 @@ public class MainActivity extends ActionBarActivity
                 menuIntent = new Intent(this, NetworkActivity.class);
                 menuIntent.putExtra("numberOfFriendRequest", numberOfFriendRequest);
                 break;
+            case 2:
+                menuIntent = new Intent(this, ProfileActivity.class);
+                break;
+            case 3:
+                menuIntent = new Intent(this, ProfileActivity.class);
+                break;
         }
 
         if (menuIntent != null)
@@ -503,7 +510,7 @@ public class MainActivity extends ActionBarActivity
         public void onClick(View v) {
 
             File imageFileFolder = new File(getCacheDir(), "Image");
-            if (!imageFileFolder.exists()){
+            if (!imageFileFolder.exists()) {
                 imageFileFolder.mkdir();
             }
 
@@ -536,11 +543,7 @@ public class MainActivity extends ActionBarActivity
                 ApplicationController.userApi().friends(session.getId(), new Callback<List<User>>() {
                     @Override
                     public void success(List<User> users, Response response) {
-                        Log.d("users", "done");
 
-                        for (User u : users) {
-                            Log.d("users", u.getName());
-                        }
                         // DialogFragment.show() will take care of adding the fragment
                         // in a transaction.  We also want to remove any currently showing
                         // dialog, so make our own transaction and take care of that here.

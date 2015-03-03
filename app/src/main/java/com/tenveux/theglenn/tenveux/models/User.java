@@ -1,6 +1,12 @@
 package com.tenveux.theglenn.tenveux.models;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
+
+import java.lang.reflect.Type;
 
 /**
  * Created by theGlenn on 16/10/2014.
@@ -65,6 +71,5 @@ public class User {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-
 
 }

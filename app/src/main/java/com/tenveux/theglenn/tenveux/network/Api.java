@@ -17,7 +17,7 @@ import retrofit.http.QueryMap;
 /**
  * Created by theGlenn on 13/10/2014.
  */
-public interface ApiController {
+public interface Api {
 
 
     public static final String BASE = "http://tenveux.herokuapp.com";
@@ -30,13 +30,7 @@ public interface ApiController {
 
     public static final String BASE_IMG = BASE; //"http://10.0.3.2:5000";
     public static final String BASE_URL = BASE + "/api/";
-    public static final String USERS_ME = "/me";
-    public static final String USERS_CREATE = "/users/create/";
-    public static final String USERS_SHOW = "/users/{id}";
-    public static final String USERS_TAKEN = "/users/{id}/taken";
-    public static final String USERS_PENDING = "/users/{id}/pending";
-    public static final String USERS_RECEIVED = "/users/{id}/received";
-    public static final String USERS_SENT = "/users/{id}/sent";
+
 
 
 }

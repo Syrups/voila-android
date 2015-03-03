@@ -1,8 +1,15 @@
 package com.tenveux.theglenn.tenveux.models;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +47,9 @@ public class Proposition {
     private Integer reproposedCount;
     @Expose
     private List<String> takers = new ArrayList<String>();
+
+    @Expose
+    private int sent;
 
     public String getId() {
         return id;
@@ -124,4 +134,11 @@ public class Proposition {
     }
 
 
+    public int getSent() {
+        return sent;
+    }
+
+    public void setSent(int sent) {
+        this.sent = sent;
+    }
 }

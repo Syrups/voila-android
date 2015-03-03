@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,6 +23,7 @@ import com.tenveux.theglenn.tenveux.UserPreferences;
 import com.tenveux.theglenn.tenveux.models.Answer;
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
+import com.tenveux.theglenn.tenveux.models.data.PropositionDeserializer;
 import com.tenveux.theglenn.tenveux.widget.PropositionPagerAdapter;
 
 import java.lang.reflect.Type;
@@ -81,7 +83,12 @@ public class PropositionsActivity extends ActionBarActivity {
 
                     //TODO : answers
                     for (JsonElement a : answers) {
-                        Answer ans = new Gson().fromJson(a.toString(), Answer.class);
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionDeserializer());
+                        Gson gson = gsonBuilder.create();
+
+                        Answer ans = gson.fromJson(a.toString(), Answer.class);
                         mAnswersAndPropostion.add(ans);
                     }
 
@@ -97,7 +104,6 @@ public class PropositionsActivity extends ActionBarActivity {
                     error.printStackTrace();
                 }
             });
-
     }
 
     @Override
