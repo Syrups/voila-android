@@ -1,9 +1,5 @@
 package com.tenveux.theglenn.tenveux.activities.home;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -11,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Base64;
@@ -28,7 +23,6 @@ import com.tenveux.theglenn.tenveux.UserPreferences;
 import com.tenveux.theglenn.tenveux.activities.MainActivity;
 import com.tenveux.theglenn.tenveux.models.User;
 import com.tenveux.theglenn.tenveux.widget.VoilaLoaderImageVIew;
-import com.tenveux.theglenn.tenveux.widget.VoilaSeekBar;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -51,15 +45,6 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  */
 public class LoginActivity extends ActionBarActivity {
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-
-
     @InjectView(R.id.logo)
     ImageView logo;
 
@@ -73,12 +58,9 @@ public class LoginActivity extends ActionBarActivity {
     VoilaLoaderImageVIew mLoader;
 
 
-    //private static final String TAG = "FacebookT";
-
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(new CalligraphyContextWrapper(newBase));
-
     }
 
     @Override
@@ -91,7 +73,6 @@ public class LoginActivity extends ActionBarActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
-
     }
 
     @Override
@@ -106,9 +87,7 @@ public class LoginActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-
     }
-
 
     private void goToMain(final User user) {
         if (user != null) {
@@ -122,6 +101,7 @@ public class LoginActivity extends ActionBarActivity {
                     UserPreferences.savePreference(userFound);
 
                     Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     LoginActivity.this.startActivity(mainIntent);
                     LoginActivity.this.finish();
                 }
@@ -210,7 +190,7 @@ public class LoginActivity extends ActionBarActivity {
         } catch (PackageManager.NameNotFoundException e) {
 
         } catch (NoSuchAlgorithmException e) {
-
+            e.printStackTrace();
         }
     }
 }

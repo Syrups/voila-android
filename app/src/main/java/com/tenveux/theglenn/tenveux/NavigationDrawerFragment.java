@@ -94,9 +94,11 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerListView = (ListView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
 
-        ImageView logo = new ImageView(getActivity());
-        logo.setImageResource(R.drawable.logo);
-        mDrawerListView.addHeaderView(logo);
+        //ImageView logo = new ImageView(getActivity());
+        //logo.setImageResource(R.drawable.logo);
+
+        View header = inflater.inflate(R.layout.menu_header, null);
+        mDrawerListView.addHeaderView(header);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

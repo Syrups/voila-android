@@ -65,31 +65,36 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/linearLayout2"
                 android:layout_alignLeft="@+id/linearLayout2"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_alignRight="@+id/linearLayout2"
                 android:layout_alignStart="@+id/linearLayout2"
                 android:layout_below="@+id/linearLayout2"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true">
 
                 <TextView
+                    android:id="@+id/sent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="14\nAccepté"
-                    android:textColor="#FFFFFF" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="20dp" />
 
                 <TextView
+                    android:id="@+id/acknowleded"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
                     android:text="14\nAccepté"
-                    android:textColor="#FFFFFF" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="20dp" />
 
                 <View
+
                     android:layout_width="1dp"
                     android:layout_height="15sp"
                     android:layout_gravity="bottom"
@@ -97,13 +102,14 @@
                     android:background="@color/voila_dark_gray_text" />
 
                 <TextView
-
+                    android:id="@+id/taken"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
                     android:text="14\nAccepté"
-                    android:textColor="#FFFFFF" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="20dp" />
             </LinearLayout>
 
         </RelativeLayout>

@@ -42,6 +42,4 @@ public class HomeActivity extends Activity {
         HomeActivity.this.startActivity(mainIntent);
         //HomeActivity.this.finish();
     }
-
-
 }

@@ -70,8 +70,6 @@ public class SplashScreenActivity extends Activity {
     }
 
     private void goToHome() {
-
-
         Intent mainIntent = new Intent(this, HomeActivity.class);
         this.startActivity(mainIntent);
         this.finish();

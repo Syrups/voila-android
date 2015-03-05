@@ -31,6 +31,12 @@ public class User {
     @Expose
     private String token;
 
+    @Expose
+    private int sent;
+
+    @Expose
+    private int taken;
+
 
     public String getMessage() {
         return message;
@@ -72,4 +78,19 @@ public class User {
         this.avatar = avatar;
     }
 
+    public int getSent() {
+        return sent;
+    }
+
+    public void setSent(int sent) {
+        this.sent = sent;
+    }
+
+    public int getTaken() {
+        return taken;
+    }
+
+    public void setTaken(int avatar) {
+        this.taken = taken;
+    }
 }

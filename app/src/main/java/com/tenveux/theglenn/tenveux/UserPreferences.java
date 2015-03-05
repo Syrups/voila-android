@@ -30,7 +30,7 @@ public class UserPreferences {
     public static User getSessionUser() {
         // Restore preferences
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
-        String user = settings.getString("User", "{error : 1}");
+        String user = settings.getString("User", EMPTY);
 
         Log.i("getting", user);
 

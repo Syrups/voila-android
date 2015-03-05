@@ -348,17 +348,19 @@ public class MainActivity extends ActionBarActivity
         Intent menuIntent = null;
 
         switch (position) {
-            case 0:
-                break;
             case 1:
+                menuIntent = new Intent(this, ProfileActivity.class);
+                break;
+            case 2:
+                //menuIntent = new Intent(this, ReceptionActivity.class);
+                break;
+            case 3:
                 menuIntent = new Intent(this, NetworkActivity.class);
                 menuIntent.putExtra("numberOfFriendRequest", numberOfFriendRequest);
                 break;
-            case 2:
-                menuIntent = new Intent(this, ProfileActivity.class);
-                break;
-            case 3:
-                menuIntent = new Intent(this, ProfileActivity.class);
+            case 4:
+                //menuIntent = new Intent(this, PopularActivity.class);
+                //menuIntent.putExtra("numberOfFriendRequest", numberOfFriendRequest)
                 break;
         }
 

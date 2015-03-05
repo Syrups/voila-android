@@ -22,8 +22,10 @@ public class TVDrawerAdapter extends ArrayAdapter {
     int layoutResourceId;
     LayoutInflater inflater;
 
-    private static final int ICONS[] = new int[]{R.drawable.menu_item_profile, R.drawable.menu_item_friends, R.drawable.menu_item_famous};
-    private static final String NAMES[] = new String[]{"profil", "amis", "populaire"};
+    private static final int ICONS[] = new int[]{R.drawable.menu_item_profile, R.drawable.menu_item_reception, R.drawable.menu_item_friends, R.drawable.menu_item_settings};
+
+   //TODO replace with string ressources
+    private static final String NAMES[] = new String[]{"profile", "reception", "network", "settings"};
 
     public TVDrawerAdapter(Context context, int resource) {
         super(context, resource);
@@ -31,7 +33,6 @@ public class TVDrawerAdapter extends ArrayAdapter {
         mContext = context;
         layoutResourceId = resource;
         inflater = LayoutInflater.from(getContext());
-
     }
 
     @Override

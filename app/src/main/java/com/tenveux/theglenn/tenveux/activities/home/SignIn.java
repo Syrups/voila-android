@@ -112,10 +112,9 @@ public class SignIn extends ActionBarActivity {
             ApplicationController.getInstance().setUserToken(user.getToken());
         }
 
-
         Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
+        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         SignIn.this.startActivity(mainIntent);
         SignIn.this.finish();
     }
-
 }
