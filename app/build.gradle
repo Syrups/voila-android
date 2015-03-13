@@ -22,10 +22,9 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'net.bozho.easycamera:easycamera:0.0.1:aar@aar'
-    //compile ('net.bozho.easycamera:easycamera:easycamera-0.0.1-aar@aar')
-    //compile('com.mikepenz.actionitembadge:library:2.1.0@aar')
 
     //compile 'com.pkmmte.view:circularimageview:1.1'
+    compile 'com.android.support:gridlayout-v7:21.0.0'
     
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:appcompat-v7:21.0.3'
