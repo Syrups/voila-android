@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.GridLayout;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.Menu;
@@ -47,6 +48,10 @@ public class ProfileActivity extends ActionBarActivity {
 
     @InjectView(R.id.acknowleded)
     TextView acknowleded;
+
+    @InjectView(R.id.sent_grid)
+    GridLayout mSentGrid;
+
 
     User mUser;
 

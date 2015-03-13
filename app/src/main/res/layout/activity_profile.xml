@@ -66,13 +66,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/linearLayout2"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignStart="@+id/linearLayout2"
                 android:layout_below="@+id/linearLayout2"
-                android:gravity="center_horizontal"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true">
+                android:gravity="center_horizontal">
 
                 <TextView
                     android:id="@+id/sent"
@@ -157,16 +157,12 @@
                 android:padding="10dp"
                 android:src="@drawable/ic_friends_select_middle" />
 
-            <android.widget.GridLayout
+            <android.support.v7.widget.GridLayout
+                android:id="@+id/sent_grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/imageView6" />
 
-
         </RelativeLayout>
-
-
     </LinearLayout>
-
-
 </FrameLayout>
