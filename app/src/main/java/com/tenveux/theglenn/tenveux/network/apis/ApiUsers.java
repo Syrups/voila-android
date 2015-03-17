@@ -31,6 +31,10 @@ public interface ApiUsers {
     @POST(API)
     public void createUser(@QueryMap Map<String, String> options, Callback<User> callback);
 
+
+    @PUT(API + "{id}")
+    public void update(@Path("id") String id, @QueryMap Map<String, String> options, Callback<User> callback);
+
     /**
      * password
      * username

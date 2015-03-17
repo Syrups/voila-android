@@ -24,12 +24,12 @@
             android:id="@+id/layout_status_fading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/relativeLayout"
+            android:layout_below="@+id/header"
             android:background="@color/translucent_black"
             android:visibility="invisible" />
 
         <RelativeLayout
-            android:id="@+id/relativeLayout"
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/translucent_black"
@@ -46,17 +46,19 @@
                 android:orientation="vertical">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/avatar"
+                    android:id="@+id/avatar_sender"
+
                     android:layout_width="60dp"
                     android:layout_height="@dimen/abc_action_bar_default_height_material"
                     android:layout_gravity="center_horizontal"
 
-                    android:src="@drawable/glenn"
+                    android:src="@drawable/ic_user_placeholder"
                     app:border_color="@android:color/white"
                     app:border_width="1dp" />
 
                 <TextView
-                    android:id="@+id/user_name"
+                    android:id="@+id/sender_name"
+
                     fontPath="fonts/JosefinSansStd-Light.otf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -84,22 +86,23 @@
                 android:orientation="vertical">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/avatar_receiver"
+                    android:id="@+id/avatar"
+                    style="@style/circle_imageview"
                     android:layout_width="60dp"
                     android:layout_height="@dimen/abc_action_bar_default_height_material"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/glenn"
                     app:border_color="@android:color/white"
                     app:border_width="1dp" />
 
                 <TextView
-                    android:id="@+id/sender_name"
+                    android:id="@+id/user_name"
                     fontPath="fonts/JosefinSansStd-Light.otf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="Léonard"
+                    android:text="Léonazeazeazeard"
                     android:textColor="@android:color/white"
                     android:textSize="15sp" />
             </LinearLayout>
@@ -132,8 +135,7 @@
             android:minWidth="70dp"
             android:text="ok !"
             android:textColor="@android:color/white"
-            android:visibility="invisible"
-            />
+            android:visibility="invisible" />
 
 
         <ImageView

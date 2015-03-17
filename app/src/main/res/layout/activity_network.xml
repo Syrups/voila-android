@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/glenn" />
+                android:src="@drawable/ic_user_placeholder" />
 
             <View
                 android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                 android:layout_marginRight="80dp"
                 android:background="@null"
                 android:drawableBottom="@drawable/edit_text_background"
-                android:drawableLeft="@android:drawable/ic_menu_search" />
+                android:drawableLeft="@drawable/ic_lens" />
 
         </RelativeLayout>
 

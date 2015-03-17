@@ -1,7 +1,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="#0099cc"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/voila_dark_blue"
     tools:context="com.tenveux.theglenn.tenveux.activities.SplashScreenActivity">
+
+    <ImageView
+        style="@style/logo_style"
+        android:layout_gravity="center" />
 
 
 </FrameLayout>

@@ -70,6 +70,10 @@ public class PropositionsActivity extends ActionBarActivity {
                 @Override
                 public void success(JsonObject jsonObject, Response response) {
 
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionDeserializer());
+                    Gson gson = gsonBuilder.create();
+
                     JsonArray answers = jsonObject.get("answers").getAsJsonArray();
                     JsonArray propositions = jsonObject.get("propositions").getAsJsonArray();
 
@@ -78,7 +82,8 @@ public class PropositionsActivity extends ActionBarActivity {
                     mAnswersAndPropostion = new ArrayList<>();
 
                     for (JsonElement p : propositions) {
-                        Proposition prop = new Gson().fromJson(p.toString(), Proposition.class);
+
+                        Proposition prop = gson.fromJson(p.toString(), Proposition.class);
                         mAnswersAndPropostion.add(prop);
                     }
 
@@ -86,9 +91,6 @@ public class PropositionsActivity extends ActionBarActivity {
                     //TODO : answers
                     for (JsonElement a : answers) {
 
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionDeserializer());
-                        Gson gson = gsonBuilder.create();
 
                         Answer ans = gson.fromJson(a.toString(), Answer.class);
                         mAnswersAndPropostion.add(ans);
@@ -129,17 +131,38 @@ public class PropositionsActivity extends ActionBarActivity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == android.R.id.home) {
+            //NavUtils.navigateUpFromSameTask(this);
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void removeProposition(Proposition wrapper) {
-        mPagerAdapter.remove(wrapper);
+    public void removeProposition(final Proposition wrapper) {
+        if (mViewPager.getCurrentItem() + 1 < mAnswersAndPropostion.size()) {
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, true);
+        }
+
+        mViewPager.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mPagerAdapter.remove(wrapper);
+            }
+        }, 500);
     }
 
-    public void removeAnswer(Answer wrapper) {
-        mPagerAdapter.remove(wrapper);
-    }
+    public void removeAnswer(final Answer wrapper) {
+        if (mViewPager.getCurrentItem() + 1 < mAnswersAndPropostion.size()) {
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, true);
+        }
 
+        mViewPager.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mPagerAdapter.remove(wrapper);
+            }
+        }, 500);
+    }
 
 }

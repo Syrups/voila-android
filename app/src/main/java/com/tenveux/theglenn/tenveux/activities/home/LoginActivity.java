@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -13,6 +12,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,7 +22,6 @@ import com.tenveux.theglenn.tenveux.R;
 import com.tenveux.theglenn.tenveux.UserPreferences;
 import com.tenveux.theglenn.tenveux.activities.MainActivity;
 import com.tenveux.theglenn.tenveux.models.User;
-import com.tenveux.theglenn.tenveux.widget.VoilaLoaderImageVIew;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -55,7 +54,7 @@ public class LoginActivity extends ActionBarActivity {
     List<EditText> mFieldsEditText;
 
     @InjectView(R.id.voila_progress)
-    VoilaLoaderImageVIew mLoader;
+    ViewGroup mLoader;
 
 
     @Override
@@ -91,11 +90,13 @@ public class LoginActivity extends ActionBarActivity {
 
     private void goToMain(final User user) {
         if (user != null) {
+
             UserPreferences.savePreference(user);
             ApplicationController.getInstance().setUserToken(user.getToken());
             ApplicationController.userApi().findByID(user.getId(), new Callback<User>() {
                 @Override
                 public void success(User userFound, Response response) {
+                    showProgress(false);
 
                     userFound.setToken(user.getToken());
                     UserPreferences.savePreference(userFound);
@@ -116,6 +117,7 @@ public class LoginActivity extends ActionBarActivity {
 
     @OnClick(R.id.login_button)
     void login() {
+        showProgress(true);
 
         Map<String, String> datas = new LinkedHashMap<>();
 
@@ -140,6 +142,7 @@ public class LoginActivity extends ActionBarActivity {
                             goToMain(user);
                             return;
                         case 404:
+                            showProgress(false);
                             error.printStackTrace();
                             return;
                     }
@@ -152,29 +155,8 @@ public class LoginActivity extends ActionBarActivity {
     /**
      * Shows the progress UI and hides the login form.
      */
-    public void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            /*mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });*/
-
-            mLoader.setVisibility(show ? View.VISIBLE : View.GONE);
-            //mLoader.animate();
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mLoader.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
+    private void showProgress(final boolean show) {
+        mLoader.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     void showKeyHash() {

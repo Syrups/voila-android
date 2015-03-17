@@ -23,4 +23,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_profile">ProfileActivity</string>
 
+    <string name="text_friend_request">Those users want you as a friend</string>
+    <string name="text_friend_search">Find your friends by typing their username</string>
+
 </resources>

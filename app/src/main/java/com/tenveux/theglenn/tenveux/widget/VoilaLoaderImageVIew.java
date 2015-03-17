@@ -27,17 +27,23 @@ public class VoilaLoaderImageVIew extends ImageView {
 
     public VoilaLoaderImageVIew(Context context) {
         super(context);
-        init(context);
+
+        if (!isInEditMode())
+            init(context);
     }
 
     public VoilaLoaderImageVIew(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+
+        if (!isInEditMode())
+            init(context);
     }
 
     public VoilaLoaderImageVIew(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
+
+        if (!isInEditMode())
+            init(context);
     }
 
     private void init(Context context) {

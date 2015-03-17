@@ -210,10 +210,6 @@ public class FriendsFragment extends DialogFragment {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
 
-
-                    String source = jsonElement.toString();
-                    Log.d("taken", source);
-
                     JsonObject json = jsonElement.getAsJsonObject();
                     String image = json.get("filename").getAsString();
 

@@ -15,6 +15,7 @@
 
 
     <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true">
@@ -36,6 +37,7 @@
             android:visibility="gone" />
 
         <RelativeLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/tenveux_text_bg"
@@ -50,7 +52,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
-                android:src="@drawable/glenn"
+                android:src="@drawable/ic_user_placeholder"
                 app:border_color="@android:color/white"
                 app:border_width="1dp" />
 
@@ -79,7 +81,7 @@
             android:text="j'en prends !"
             android:textColor="@color/cyan"
             android:textSize="40sp"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
 
         <com.tenveux.theglenn.tenveux.widget.VoilaSeekBar

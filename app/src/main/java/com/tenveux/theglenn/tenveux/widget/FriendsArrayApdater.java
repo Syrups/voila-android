@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.tenveux.theglenn.tenveux.R;
+import com.tenveux.theglenn.tenveux.Utils;
 import com.tenveux.theglenn.tenveux.models.User;
 
 import java.util.List;
@@ -105,12 +107,13 @@ public class FriendsArrayApdater extends ArrayAdapter {
             String name = user.getName();
 
             //TODO : uncoment
-            /*Picasso.with(getContext())
-                    .load(Utils.getFacebookPixURL(user))
+            Picasso.with(getContext())
+                    .load(user.getAvatar())
                     .resize(50, 50)
                     .centerCrop()
+                    .placeholder(R.drawable.ic_user_placeholder)
                             //.transform(new CircleTransformation())
-                    .into(holder.avatar);*/
+                    .into(holder.avatar);
 
             switch (showMode) {
                 case DEFAULT_MODE:

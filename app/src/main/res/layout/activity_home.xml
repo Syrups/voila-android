@@ -11,34 +11,29 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/logo_style"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/logo" />
+        android:src="@drawable/ic_logo" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@android:id/text1"
+        style="@style/text_sub_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView2"
         android:layout_centerHorizontal="true"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_centerVertical="true"
+        android:text="@string/opening_text" />
 
 
     <Button
         android:id="@+id/sign_in_button"
         style="@style/ButtonBigStyle"
-        fontPath="fonts/SansitaOne.ttf"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
         android:layout_above="@+id/login_button"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:minWidth="150dp"
-        android:text="Sign In"
-        android:textColor="@android:color/white" />
+        android:text="Sign In" />
 
 
     <Button
@@ -52,6 +47,5 @@
         android:minWidth="70dp"
         android:text="Login"
         android:textColor="@android:color/white" />
-
 
 </RelativeLayout>

@@ -16,7 +16,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/glenn"
+        android:src="@drawable/ic_user_placeholder"
         app:border_color="#FFFFFF"
         app:border_width="1dp" />
     <!--

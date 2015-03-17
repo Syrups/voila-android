@@ -8,70 +8,74 @@
     android:background="@color/voila_dark_blue"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="?attr/actionBarSize"
     tools:context="com.tenveux.theglenn.tenveux.activities.home.LoginActivity">
 
-
-    <com.tenveux.theglenn.tenveux.widget.VoilaLoaderImageVIew
+    <FrameLayout
         android:id="@+id/voila_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#77000000"
+        android:visibility="gone">
+
+        <com.tenveux.theglenn.tenveux.widget.VoilaLoaderImageVIew
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/logo_style"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/logo" />
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:id="@+id/user_name"
-        android:layout_width="wrap_content"
+        style="@style/voila_editext"
         android:layout_height="wrap_content"
         android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
-        android:ems="10"
-        android:hint="Username"
+        android:layout_marginTop="60dp"
+        android:drawableLeft="@drawable/ic_user"
+        android:hint="@string/edit_username"
         android:inputType="textPersonName"
         android:tag="username" />
 
     <EditText
         android:id="@+id/password"
-        android:layout_width="wrap_content"
+        style="@style/voila_editext"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/logo"
-        android:layout_alignStart="@+id/logo"
         android:layout_below="@+id/user_name"
-        android:ems="10"
-        android:hint="Password"
+        android:layout_centerHorizontal="true"
+        android:drawableLeft="@drawable/ic_key"
+        android:hint="@string/edit_password"
         android:inputType="textPassword"
         android:tag="password" />
+
+    <Button
+        android:id="@+id/login_button"
+        style="@style/ButtonBigStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="Login" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_below="@+id/login_button"
         android:layout_centerHorizontal="true"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Button
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/textView2"
-        android:layout_centerHorizontal="true"
-        android:text="Login" />
+        android:layout_marginTop="10dp"
+        android:text="@string/text_password_get_back"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
 </RelativeLayout>
-
 
 

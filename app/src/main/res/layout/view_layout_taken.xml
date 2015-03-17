@@ -19,6 +19,7 @@
         android:background="@drawable/btn_rounded_border_cyan"
         android:minWidth="150dp"
         android:text="reproposer"
+
         android:textColor="@android:color/white" />
 
     <Button

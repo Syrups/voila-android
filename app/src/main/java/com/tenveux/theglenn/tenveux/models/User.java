@@ -5,8 +5,10 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
+import com.tenveux.theglenn.tenveux.network.Api;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * Created by theGlenn on 16/10/2014.
@@ -36,6 +38,9 @@ public class User {
 
     @Expose
     private int taken;
+
+    @Expose
+    private List<String> androidDeviceTokens;
 
 
     public String getMessage() {
@@ -71,7 +76,8 @@ public class User {
     }
 
     public String getAvatar() {
-        return avatar;
+
+        return Api.MEDIA_URL + avatar;
     }
 
     public void setAvatar(String avatar) {
@@ -92,5 +98,13 @@ public class User {
 
     public void setTaken(int avatar) {
         this.taken = taken;
+    }
+
+    public List<String> getAndroidDeviceTokens() {
+        return androidDeviceTokens;
+    }
+
+    public void setAndroidDeviceTokens(List<String> androidDeviceTokens) {
+        this.androidDeviceTokens = androidDeviceTokens;
     }
 }

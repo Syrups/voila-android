@@ -3,7 +3,6 @@ package com.tenveux.theglenn.tenveux.fragment;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
@@ -12,8 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -31,12 +29,9 @@ import com.tenveux.theglenn.tenveux.activities.PropositionsActivity;
 import com.tenveux.theglenn.tenveux.models.Answer;
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
-import com.tenveux.theglenn.tenveux.widget.PropositionPagerAdapter;
 import com.tenveux.theglenn.tenveux.widget.VoilaSeekBar;
 
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -62,6 +57,10 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
 
     @InjectView(android.R.id.background)
     ImageView mImage;
+
+    @Optional
+    @InjectView(R.id.header)
+    ViewGroup mheader;
 
 
     @Optional
@@ -89,8 +88,8 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
     CircleImageView mAvatar;
 
     @Optional
-    @InjectView(R.id.avatar_receiver)
-    CircleImageView mAvatarReceiver;
+    @InjectView(R.id.avatar_sender)
+    CircleImageView mAvatarSender;
 
     @Optional
     @InjectView(R.id.seekBar)
@@ -147,17 +146,18 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         ButterKnife.inject(this, v);
 
         final String imageURl = Utils.getPropositionMediaUrl(mPropMode ? mProposition : mAnswer.getProposition());
-        Picasso.with(getActivity()).load(imageURl).into(mImage, new Callback() {
-            @Override
-            public void onSuccess() {
-                Log.d("Picasso", "done -> " + imageURl);
-            }
+        Picasso.with(getActivity()).load(imageURl)
+                .into(mImage, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d("Picasso", "done -> " + imageURl);
+                    }
 
-            @Override
-            public void onError() {
-                Log.d("Picasso", "error ->" + imageURl);
-            }
-        });
+                    @Override
+                    public void onError() {
+                        Log.d("Picasso", "error ->" + imageURl);
+                    }
+                });
 
 
         if (mPropMode) {
@@ -169,22 +169,47 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         return v;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (fadingView != null) {
+            if (!mPropMode) {
+
+                int visibility = (isVisibleToUser ? View.VISIBLE : View.GONE);
+                fadingView.setVisibility(visibility);
+                statusText.setVisibility(visibility);
+                buttonOk.setVisibility(visibility);
+
+                AlphaAnimation alphaAnimation = new AlphaAnimation(0.f, 1.f);
+                alphaAnimation.setDuration(500);
+
+                statusText.startAnimation(alphaAnimation);
+                //ViewHelper.setAlpha(fadingView, 0);
+
+            } /*else {
+                showFade(!isVisibleToUser);
+            }*/
+        }
+    }
+
     void initProposition() {
         //Load : Background
 
-
-        //TODO : Load Avatar
-        /*Picasso.with(getActivity())
-                .load()
+        User sender = mProposition.getSender();
+        Picasso.with(getActivity())
+                .load(sender.getAvatar())
+                .placeholder(R.drawable.ic_user_placeholder)
                 .resize(50, 50)
                 .centerCrop()
-                .into(avatar);*/
+                .into(mAvatar);
 
         // Sender informations
-        String name = mProposition.getSender().getName();
+        String name = sender.getName();
         String tenveux = getResources().getString(R.string.ten_veux);
         Spanned phrase = Html.fromHtml("<b>" + name + "</b> : " + "<i>" + tenveux + "</i>");
 
+        ViewHelper.setAlpha(fadingView, 0);
         text.setText(phrase);
         this.setupSwitch();
     }
@@ -193,16 +218,19 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
 
         User from = this.mAnswer.getFrom();
         User to = this.mAnswer.getTo();
-         /*Picasso.with(getActivity())
+        Picasso.with(getActivity())
+                .load(from.getAvatar())
+                .placeholder(R.drawable.ic_user_placeholder)
+                .resize(50, 50)
+                .centerCrop()
+                .into(mAvatarSender);
+
+        Picasso.with(getActivity())
                 .load(to.getAvatar())
+                .placeholder(R.drawable.ic_user_placeholder)
                 .resize(50, 50)
                 .centerCrop()
                 .into(mAvatar);
-         Picasso.with(getActivity())
-                .load(from.getAvatar())
-                .resize(50, 50)
-                .centerCrop()
-                .into(mAvatar);*/
 
         fromName.setText(from.getName());
         toName.setText(to.getName());
@@ -211,15 +239,6 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         int color = getResources().getColor(colorRes);
 
         statusText.setTextColor(color);
-
-        v.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fadingView.setVisibility(View.VISIBLE);
-                statusText.setVisibility(View.VISIBLE);
-                buttonOk.setVisibility(View.VISIBLE);
-            }
-        }, 500);
     }
 
 
@@ -230,6 +249,7 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
 
         ViewHelper.setScaleX(statusText, initX);
         ViewHelper.setScaleY(statusText, initY);
+
 
         mSwitchBar.setProgress(100);
         mSwitchBar.setOnVoilaSeekBarChangeListener(new VoilaSeekBar.OnVoilaSeekBarChangeListener() {
@@ -246,45 +266,17 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
                     PropositionFragment.this.takeProposition();
                 else
                     PropositionFragment.this.dismissProposition();
-
-                /*ScaleAnimation sAnim = new ScaleAnimation(
-                        currentX, END_SCALE,
-                        currentY, END_SCALE,
-                        Animation.RELATIVE_TO_SELF, 0.5f,
-                        Animation.RELATIVE_TO_SELF, 0.5f);*/
-
-                //sAnim.setDuration(100);
-                //sAnim.setFillAfter(true);
-                //statusText.startAnimation(sAnim);
-
-                /*sAnim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });*/
             }
 
             @Override
             public void onNeutralSelected() {
-                fadingView.setVisibility(View.GONE);
+                showFade(false);
             }
 
             @Override
             public void onStartTrackingTouch() {
-                fadingView.setVisibility(View.VISIBLE);
+                showFade(true);
                 statusText.setVisibility(View.VISIBLE);
-
             }
 
             float augFactor = 0.5f;
@@ -335,7 +327,8 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
     }
 
     void showDismissDialog() {
-
+        buttonRe.setVisibility(View.GONE);
+        mTakenLayout.setVisibility(View.VISIBLE);
     }
 
 
@@ -343,25 +336,12 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
 
         mTookLogo.setVisibility(View.VISIBLE);
         mSwitchBar.setVisibility(View.INVISIBLE);
-
-        /*ViewHelper.setScaleX(mTookLogo, 5f);
-        ViewHelper.setScaleY(mTookLogo, 5f);
-
-        ScaleAnimation sAnim = new ScaleAnimation(
-                ViewHelper.getScaleX(mTookLogo), .3f,
-                ViewHelper.getScaleY(mTookLogo), .3f,
-                Animation.RELATIVE_TO_SELF, .5f,
-                Animation.RELATIVE_TO_SELF, .5f);
-
-        sAnim.setDuration(500);
-        sAnim.setFillAfter(true)
-        mTookLogo.startAnimation(sAnim);;*/
+        mSwitchBar.setProgress(100);
 
         ApplicationController.propositionApi().takePropostion(mProposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
                 showDialog();
-                //((PropositionsActivity) getActivity()).removeProposition(proposition);
             }
 
             @Override
@@ -372,11 +352,15 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
     }
 
     void dismissProposition() {
+
+        mTookLogo.setVisibility(View.VISIBLE);
+        mSwitchBar.setVisibility(View.INVISIBLE);
+        mSwitchBar.setProgress(100);
+
         ApplicationController.propositionApi().dismissPropostion(mProposition.getId(), new retrofit.Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
                 showDismissDialog();
-                //((PropositionsActivity) getActivity()).removeProposition(proposition);
             }
 
             @Override
@@ -441,5 +425,25 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
     @Override
     public void onPropositionSent(JsonElement JsonElement) {
 
+    }
+
+    private void showFade(boolean show) {
+        float from = show ? 0.0f : 1.0f;
+        float to = show ? 1.0f : 0.0f;
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(from, to);
+        alphaAnimation.setDuration(500);
+
+        AlphaAnimation alphaAnimationR = new AlphaAnimation(to, from);
+        alphaAnimationR.setDuration(500);
+
+        fadingView.clearAnimation();
+        fadingView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        fadingView.startAnimation(alphaAnimation);
+
+        if (mheader != null) {
+            //mheader.clearAnimation();
+            //mheader.startAnimation(alphaAnimationR);
+        }
     }
 }

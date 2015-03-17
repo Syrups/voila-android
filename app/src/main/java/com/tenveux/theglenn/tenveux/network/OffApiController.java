@@ -13,7 +13,6 @@ import retrofit.mime.TypedFile;
  */
 public interface OffApiController {
 
-    public static final String MEDIA_URL = Api.BASE + "/media/";
     public static final String UPLOAD_URL = "/images";
 
     @Multipart

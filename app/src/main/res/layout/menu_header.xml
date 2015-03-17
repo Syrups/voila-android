@@ -4,6 +4,6 @@
     android:layout_height="150dp"
     android:padding="10dp"
     android:scaleType="centerInside"
-    android:src="@drawable/logo">
+    android:src="@drawable/ic_logo">
 
 </ImageView>

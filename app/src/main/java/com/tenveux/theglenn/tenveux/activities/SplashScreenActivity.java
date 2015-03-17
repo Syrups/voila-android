@@ -46,18 +46,29 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.activity_splash_screen);
         final User user = UserPreferences.getSessionUser();
 
-          /* and close this Splash-Screen after some seconds.*/
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        // Check device for Play Services APK. If check succeeds, proceed with
+        //  GCM registration.
+        if (ApplicationController.checkPlayServices(this)) {
 
-                if (user != null) {
-                    goToMain(user);
-                } else {
-                    goToHome();
+            if (user != null)
+                ApplicationController.registerInBackground(user.getId(), this.getApplicationContext());
+
+             /* and close this Splash-Screen after some seconds.*/
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (user != null) {
+                        goToMain(user);
+                    } else {
+                        goToHome();
+                    }
                 }
-            }
-        }, SPLASH_DISPLAY_LENGTH);
+            }, SPLASH_DISPLAY_LENGTH);
+
+        } else {
+            Log.i("VOILA", "No valid Google Play Services APK found.");
+        }
     }
 
     private void goToMain(User user) {

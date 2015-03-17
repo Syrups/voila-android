@@ -20,17 +20,10 @@ import retrofit.http.QueryMap;
 public interface Api {
 
 
-    public static final String BASE = "http://tenveux.herokuapp.com";
-            //"http://192.168.1.29:5000";
-    //"http://10.0.3.2:5000";
-    //public static final String BASE = "http://mockserver.com";
-
-    //public static final String BASE =  "http://tenveux.herokuapp.com";
-    //"http://192.168.2.2:5000";
-
-    public static final String BASE_IMG = BASE; //"http://10.0.3.2:5000";
+    public static final String BASE = "http://23.251.133.98:8080";
+    public static final String MEDIA_URL = "http://tenveuxmedia.storage.googleapis.com/";
     public static final String BASE_URL = BASE + "/api/";
 
-
-
+    //http://tenveux.herokuapp.com"
+    //"http://10.0.3.2:5000";
 }

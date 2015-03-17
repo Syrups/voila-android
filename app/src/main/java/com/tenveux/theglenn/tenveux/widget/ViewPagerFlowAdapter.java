@@ -75,7 +75,7 @@ public class ViewPagerFlowAdapter extends PagerAdapter {
         Picasso.with(context)
                 .load(imageURl)
                         //.centerInside()
-                .placeholder(R.drawable.ic_launcher)
+                .placeholder(R.drawable.ic_user_placeholder)
                 .into(image, new Callback() {
                     @Override
                     public void onSuccess() {

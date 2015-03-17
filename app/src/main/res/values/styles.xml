@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:circle="http://schemas.android.com/apk/de.hdodenhof.circleimageview" xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Tenveux.Widget.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background" tools:ignore="NewApi">@color/red</item>
         <item name="background">@color/red</item>
-        <item name="android:colorControlNormal" tools:ignore="NewApi">            @color/cyan</item>
+        <item name="android:colorControlNormal" tools:ignore="NewApi">@color/cyan</item>
     </style>
 
     <style name="Tenveux.Widget.ActionBar.NOActionBar">
@@ -27,6 +27,10 @@
         <item name="fontPath">fonts/SansitaOne.ttf</item>
         <item name="android:background">@drawable/bg_cyan_gradiant</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:minWidth">150dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:textSize">20sp</item>
+
     </style>
 
     <style name="DialogAnimation">
@@ -50,5 +54,35 @@
     </style>
 
     <style name="ButtonBarButton" />
+
+    <style name="logo_style">
+        <item name="android:layout_width">200dp</item>
+        <item name="android:layout_height">150dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:src">@drawable/ic_logo</item>
+    </style>
+
+    <style name="text_sub_logo">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="fontPath">fonts/AvenirNextRegular.otf</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="voila_editext">
+        <item name="android:layout_width">250dp</item>
+        <item name="android:ems">10</item>
+        <item name="android:drawablePadding">10sp</item>
+        <item name="android:gravity">bottom</item>
+    </style>
+
+    <style name="circle_imageview">
+        <item name="android:src">@drawable/ic_user_placeholder</item>
+        <!---<item name="circle:border_color">@android:color/white</item>
+        <item name="circle:border_width">1dp</item>-->
+    </style>
 
 </resources>

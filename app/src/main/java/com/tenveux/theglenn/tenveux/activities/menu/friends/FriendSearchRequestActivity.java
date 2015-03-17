@@ -1,20 +1,17 @@
 package com.tenveux.theglenn.tenveux.activities.menu.friends;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.tenveux.theglenn.tenveux.ApplicationController;
 import com.tenveux.theglenn.tenveux.R;

@@ -17,28 +17,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by theGlenn on 13/10/2014.
  */
 public class Utils {
 
-    public static String getFacebookPixURL(User user) {
-        return "https://graph.facebook.com/" + user.getId() + "/picture?type=large";
-    }
-
-    public static String getMediaAvatarUrl(User user) {
-        return "https://graph.facebook.com/" + user.getId() + "/picture?type=large";
-    }
-
     public static String getPropositionMediaUrl(Proposition p) {
-        return OffApiController.MEDIA_URL + p.getImage();
-    }
-
-    public static String getImage2(String url) throws URISyntaxException {
-        URI uri = new URI(url);
-        String domain = Api.BASE_IMG + uri.getRawPath();
-        return domain;
+        return Api.MEDIA_URL + p.getImage();
     }
 
     public static Bitmap takeScreenShot(Activity activity) {
@@ -229,5 +217,25 @@ public class Utils {
         }
         Bitmap bitmap = BitmapFactory.decodeStream(istr);
         return bitmap;
+    }
+
+    /**
+     * method is used for checking valid email id format.
+     *
+     * @param email
+     * @return boolean true for valid false for invalid
+     */
+    public static boolean isEmailValid(String email) {
+        boolean isValid = false;
+
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        CharSequence inputStr = email;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches()) {
+            isValid = true;
+        }
+        return isValid;
     }
 }
