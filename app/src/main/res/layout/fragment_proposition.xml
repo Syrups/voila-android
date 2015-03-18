@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tenveux.theglenn.tenveux.fragment.PropositionFragment">
+    tools:context="com.tenveux.app.fragment.PropositionFragment">
 
 
     <ImageView
@@ -84,7 +84,7 @@
             android:visibility="gone" />
 
 
-        <com.tenveux.theglenn.tenveux.widget.VoilaSeekBar
+        <com.tenveux.app.widget.VoilaSeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

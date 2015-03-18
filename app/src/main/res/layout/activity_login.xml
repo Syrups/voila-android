@@ -8,7 +8,7 @@
     android:background="@color/voila_dark_blue"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="com.tenveux.theglenn.tenveux.activities.home.LoginActivity">
+    tools:context="com.tenveux.app.activities.home.LoginActivity">
 
     <FrameLayout
         android:id="@+id/voila_progress"
@@ -17,7 +17,7 @@
         android:background="#77000000"
         android:visibility="gone">
 
-        <com.tenveux.theglenn.tenveux.widget.VoilaLoaderImageVIew
+        <com.tenveux.app.widget.VoilaLoaderImageVIew
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/voila_dark_blue"
-    tools:context="com.tenveux.theglenn.tenveux.activities.SplashScreenActivity">
+    tools:context="com.tenveux.app.activities.SplashScreenActivity">
 
     <ImageView
         style="@style/logo_style"

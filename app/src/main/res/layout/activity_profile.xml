@@ -4,7 +4,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tenveux.theglenn.tenveux.activities.menu.profile.ProfileActivity"
+    tools:context="com.tenveux.app.activities.menu.profile.ProfileActivity"
     tools:ignore="MergeRootFrame">
 
     <LinearLayout
@@ -19,6 +19,7 @@
 
 
             <ImageView
+                android:id="@+id/profile_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
