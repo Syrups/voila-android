@@ -7,6 +7,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.tenveux.app.models.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by theGlenn on 13/10/2014.
  */
@@ -60,5 +63,10 @@ public class UserPreferences {
         boolean done = editor.commit();
         Log.d("commit", "_" + done);
         settings.registerOnSharedPreferenceChangeListener(l);
+    }
+
+
+    public static List<User> getCachedFriends() {
+        return new ArrayList<User>();
     }
 }

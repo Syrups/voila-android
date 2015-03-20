@@ -19,7 +19,7 @@ import com.tenveux.app.models.User;
 import com.tenveux.app.models.data.PropositionDeserializer;
 import com.tenveux.app.models.data.PropositionSerializer;
 import com.tenveux.app.network.Api;
-import com.tenveux.app.network.OffApiController;
+import com.tenveux.app.network.MediaController;
 import com.tenveux.app.network.apis.ApiPropositions;
 import com.tenveux.app.network.apis.ApiUsers;
 
@@ -64,7 +64,7 @@ public class ApplicationController extends Application {
      * A singleton instance of the application class for easy access in other places
      */
     private static ApplicationController sInstance;
-    private OffApiController offService;
+    private MediaController mMediaService;
     private ApiUsers userService;
     private ApiPropositions propoService;
 
@@ -107,12 +107,12 @@ public class ApplicationController extends Application {
         propoService = restAdapter.create(ApiPropositions.class);
 
 
-        RestAdapter offAdapter = new RestAdapter.Builder()
-                .setRequestInterceptor(requestInterceptor)
+        RestAdapter mediAdapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.BASIC)
                 .setEndpoint(Api.BASE)
-                //.setClient(new MockClient())
+                .setRequestInterceptor(requestInterceptor)
                 .build();
-        offService = offAdapter.create(OffApiController.class);
+        mMediaService = mediAdapter.create(MediaController.class);
 
         //CalligraphyConfig
         CalligraphyConfig.initDefault("fonts/Roboto-Regular.ttf", R.attr.fontPath);
@@ -141,8 +141,8 @@ public class ApplicationController extends Application {
         return sInstance.propoService;
     }
 
-    public static OffApiController offApi() {
-        return sInstance.offService;
+    public static MediaController media() {
+        return sInstance.mMediaService;
     }
 
     public boolean isUserLoggedIn() {

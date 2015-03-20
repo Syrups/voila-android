@@ -377,28 +377,17 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
         final Proposition bProposition = new Proposition();
         bProposition.setOriginalProposition(this.mProposition.getId());
 
-        User session = UserPreferences.getSessionUser();
-        ApplicationController.userApi().friends(session.getId(), new retrofit.Callback<List<User>>() {
-            @Override
-            public void success(List<User> users, Response response) {
-                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-                Fragment prev = getChildFragmentManager().findFragmentByTag("dialog");
-                if (prev != null) {
-                    ft.remove(prev);
-                }
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        Fragment prev = getChildFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
 
-                ft.addToBackStack(null);
+        ft.addToBackStack(null);
 
-                // Create and show the dialog.
-                FriendsFragment newFragment = FriendsFragment.newInstance(users, bProposition, true);
-                newFragment.show(ft, "dialog");
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
+        // Create and show the dialog.
+        FriendsFragment newFragment = FriendsFragment.newInstance(bProposition, true);
+        newFragment.show(ft, "dialog");
     }
 
     @OnClick(R.id.button_ok)

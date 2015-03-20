@@ -75,8 +75,8 @@ public class GcmIntentService extends IntentService {
         String name = extras.getString("name");
 
         String[] messages = getResources().getStringArray(R.array.notification_messages);
-        String[] titles = getResources().getStringArray(R.array.notification_messages);
         String msg = String.format(messages[type], name);
+
 
         Class activityClass = MainActivity.class;
         switch (type) {
@@ -101,15 +101,16 @@ public class GcmIntentService extends IntentService {
                 new NotificationCompat.Builder(this)
 
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(titles[type])
+                        .setContentTitle(getString(R.string.app_name))
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
+                        .setContentIntent(contentIntent)
                         .setContentText(msg);
 
         Notification notification = mBuilder.build();
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-        mBuilder.setContentIntent(contentIntent);
+
         mNotificationManager.notify(NOTIFICATION_ID, notification);
     }
 }

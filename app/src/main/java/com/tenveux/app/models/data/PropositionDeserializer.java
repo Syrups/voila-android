@@ -23,13 +23,24 @@ public class PropositionDeserializer implements JsonDeserializer<Proposition> {
         JsonElement elSender = elPropositon.get("sender");
         JsonElement elOriginalProposition = elPropositon.get("originalProposition");
         JsonArray elReceivers = elPropositon.get("receivers").getAsJsonArray();
+        JsonArray elTakers = elPropositon.get("takers").getAsJsonArray();
 
         if (!elSender.isJsonObject()) {
             elPropositon.remove("sender");
         }
 
         if (elOriginalProposition.isJsonObject()) {
+
             elPropositon.remove("originalProposition");
+        }
+
+
+        if (!elTakers.isJsonNull()) {
+            elPropositon.remove("takers");
+            /*if (elTakers.getAsJsonArray().size() > 0) {
+                if (!elTakers.get(0).isJsonObject())
+                    elPropositon.remove("takers");
+            }*/
         }
 
         if (!elReceivers.isJsonNull()) {

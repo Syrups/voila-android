@@ -100,8 +100,8 @@ public class MainActivity extends ActionBarActivity
     private ListView mDrawerList;
 
 
-    private TypedFile fileToSend;
-    private Bitmap photoToSend;
+    private TypedFile mTypedFileToSend;
+    private Bitmap mPhotoToSend;
 
     private Camera camera;
     private int cameraId = 0;
@@ -110,14 +110,15 @@ public class MainActivity extends ActionBarActivity
     private CameraPreview mPreview;
 
     private static boolean isFrontCameraAvalaible;
-    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+    private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
 
-            MainActivity.this.photoToSend = BitmapFactory.decodeByteArray(data, 0, data.length);
+            //MainActivity.this.photoToSend
+            Bitmap toSend = BitmapFactory.decodeByteArray(data, 0, data.length);
 
-            switchPreviewMode(true);
+            switchPreviewMode(true, toSend);
 
             Log.d("taken", data.length + " / ");
         }
@@ -209,7 +210,7 @@ public class MainActivity extends ActionBarActivity
                     @Override
                     public void onClick(View v) {
                         // get an image from the camera
-                        mCamera.takePicture(null, null, mPicture);
+                        mCamera.takePicture(null, null, mPictureCallback);
                     }
                 }
         );
@@ -234,9 +235,9 @@ public class MainActivity extends ActionBarActivity
                         InputStream imageStream = getContentResolver().openInputStream(imageUri);
 
                         Bitmap b = BitmapFactory.decodeStream(imageStream);
-                        MainActivity.this.photoToSend = ExifUtils.rotateBitmap(this, imageUri, b);
+                        Bitmap photoToSend = ExifUtils.rotateBitmap(this, imageUri, b);
 
-                        switchPreviewMode(false);
+                        switchPreviewMode(false, photoToSend);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -437,7 +438,7 @@ public class MainActivity extends ActionBarActivity
                     @Override
                     public void onClick(View v) {
                         // get an image from the camera
-                        mCamera.takePicture(null, null, mPicture);
+                        mCamera.takePicture(null, null, mPictureCallback);
                     }
                 }
         );
@@ -476,7 +477,7 @@ public class MainActivity extends ActionBarActivity
                     @Override
                     public void onClick(View v) {
                         // get an image from the camera
-                        mCamera.takePicture(null, null, mPicture);
+                        mCamera.takePicture(null, null, mPictureCallback);
                     }
                 }
         );
@@ -484,7 +485,8 @@ public class MainActivity extends ActionBarActivity
         mCamera.startPreview();
     }
 
-    private void switchPreviewMode(boolean withCamera) {
+    private void switchPreviewMode(boolean fromCamera, Bitmap photoToSend) {
+        this.mPhotoToSend = photoToSend;
 
         captureButton.setSelected(true);
         captureButton.setClickable(false);
@@ -495,9 +497,9 @@ public class MainActivity extends ActionBarActivity
         mLoadButton.setVisibility(View.GONE);
         switchCameraButton.setVisibility(View.GONE);
 
-        if (!withCamera) {
+        if (!fromCamera) {
             mPickedImage.setVisibility(View.VISIBLE);
-            mPickedImage.setImageBitmap(this.photoToSend);
+            mPickedImage.setImageBitmap(photoToSend);
         }
 
         captureButton.setOnClickListener(showFriends);
@@ -520,9 +522,12 @@ public class MainActivity extends ActionBarActivity
             try {
                 fos = new FileOutputStream(imageFileName);
                 //fos.write(byteArray);
-                photoToSend.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                mPhotoToSend.compress(Bitmap.CompressFormat.JPEG, 100, fos);
 
                 fos.flush();
+
+
+                showFriendsForFile(imageFileName);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -535,37 +540,21 @@ public class MainActivity extends ActionBarActivity
                     Log.e("ErrTenveux", "Failed to close output stream", e);
                 }
             }
-
-            final TypedFile imagetoSend = new TypedFile("image/jpeg", imageFileName);
-            final User session = UserPreferences.getSessionUser();
-
-            if (session != null) {
-                ApplicationController.userApi().friends(session.getId(), new Callback<List<User>>() {
-                    @Override
-                    public void success(List<User> users, Response response) {
-
-                        // DialogFragment.show() will take care of adding the fragment
-                        // in a transaction.  We also want to remove any currently showing
-                        // dialog, so make our own transaction and take care of that here.
-                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
-                        if (prev != null) {
-                            ft.remove(prev);
-                        }
-
-                        ft.addToBackStack(null);
-
-                        // Create and show the dialog.
-                        FriendsFragment newFragment = FriendsFragment.newInstance(users, imagetoSend);
-                        newFragment.show(ft, "dialog");
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        error.printStackTrace();
-                    }
-                });
-            }
         }
     };
+
+
+    private void showFriendsForFile(File imageToSend) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        FriendsFragment newFragment = FriendsFragment.newInstance(imageToSend);
+        newFragment.show(ft, "dialog");
+    }
 }

@@ -27,6 +27,7 @@ import com.tenveux.app.models.Proposition;
 import com.tenveux.app.models.User;
 import com.tenveux.app.widget.FriendsArrayApdater;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,11 +55,11 @@ public class FriendsFragment extends DialogFragment {
 
     // TODO: Rename and change types of parameters
 
-    private FriendsArrayApdater adapter;
+    private FriendsArrayApdater mUsersAdapter;
     private FrienSelectedListner mListener;
 
-    TypedFile mImageFile;
-    List<User> users;
+    File mImageFile;
+    List<User> mUsers;
     Proposition proposition = new Proposition();
 
     boolean bounce;
@@ -72,16 +73,14 @@ public class FriendsFragment extends DialogFragment {
 
 
     // TODO: Rename and change types of parameters
-    public static FriendsFragment newInstance(List<User> users, TypedFile image) {
+    public static FriendsFragment newInstance(File image) {
         FriendsFragment fragment = new FriendsFragment();
-        fragment.users = users;
         fragment.mImageFile = image;
         return fragment;
     }
 
-    public static FriendsFragment newInstance(List<User> users, Proposition p, boolean bounce) {
+    public static FriendsFragment newInstance(Proposition p, boolean bounce) {
         FriendsFragment fragment = new FriendsFragment();
-        fragment.users = users;
         fragment.proposition = p;
         fragment.bounce = bounce;
         return fragment;
@@ -97,6 +96,25 @@ public class FriendsFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mUsers = UserPreferences.getCachedFriends();
+
+        final User session = UserPreferences.getSessionUser();
+        if (session != null) {
+            ApplicationController.userApi().friends(session.getId(), new Callback<List<User>>() {
+                @Override
+                public void success(List<User> users, Response response) {
+                    mUsers = users;
+                    mUsersAdapter.setUsers(mUsers);
+                    mUsersAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    error.printStackTrace();
+                }
+            });
+        }
 
         if (getArguments() != null) {
         }
@@ -133,13 +151,13 @@ public class FriendsFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_fragment_friends, null);
-        adapter = new FriendsArrayApdater(getActivity(), R.layout.list_item_friends, this.users);
-        adapter.setSendMode(FriendsArrayApdater.SEND_MODE);
+        mUsersAdapter = new FriendsArrayApdater(getActivity(), R.layout.list_item_friends, mUsers);
+        mUsersAdapter.setSendMode(FriendsArrayApdater.SEND_MODE);
 
         ButterKnife.inject(this, v);
 
 
-        mUsersList.setAdapter(adapter);
+        mUsersList.setAdapter(mUsersAdapter);
         mUsersList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         mUsersList.setItemsCanFocus(false);
         mUsersList.setDivider(null);
@@ -197,7 +215,7 @@ public class FriendsFragment extends DialogFragment {
             // This tells us the item position we are looking at
             final int position = checkedItems.keyAt(i);
 
-            User user = users.get(position);
+            User user = mUsers.get(position);
             userIds.add(user);
         }
 
@@ -206,7 +224,9 @@ public class FriendsFragment extends DialogFragment {
         proposition.setSender(sessionUser);
 
         if (mImageFile != null) {
-            ApplicationController.offApi().sendImage(mImageFile, new Callback<JsonElement>() {
+
+            TypedFile imageToSend = new TypedFile("image/jpeg", mImageFile);
+            ApplicationController.media().sendImage(imageToSend, new Callback<JsonElement>() {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
 
@@ -249,7 +269,7 @@ public class FriendsFragment extends DialogFragment {
             @Override
             public void failure(RetrofitError error) {
 
-                Toast.makeText(getActivity(), "Erreur de connextion", Toast.LENGTH_LONG);
+                Toast.makeText(getActivity(), "Erreur de connextion", Toast.LENGTH_LONG).show();
 
                 error.printStackTrace();
             }
