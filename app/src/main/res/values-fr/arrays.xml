@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="notification_messages">
+        <item>Vous avez été servi par %s</item>
+        <item>%s : j\'en prends !</item>
+        <item>%s souhaite vous ajouter à ses amis. T\'en veux ?</item>
+        <item>%s vous a accepté dans ses amis</item>
+    </array>
+</resources>
