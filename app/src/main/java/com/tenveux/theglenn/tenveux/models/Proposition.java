@@ -1,6 +1,10 @@
 package com.tenveux.theglenn.tenveux.models;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -8,10 +12,23 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+import com.tenveux.theglenn.tenveux.models.data.PropositionDeserializer;
+import com.tenveux.theglenn.tenveux.models.data.PropositionSerializer;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.mime.TypedFile;
 
 /**
  * Created by theGlenn on 16/10/2014.
@@ -39,6 +56,7 @@ public class Proposition {
     private String originalProposition;
     @Expose
     private String image;
+
 
     @Expose
     private Boolean isPrivate;
@@ -141,4 +159,73 @@ public class Proposition {
     public void setSent(int sent) {
         this.sent = sent;
     }
+
+
+    public static void cacheProposition(Context context, Proposition proposition, TypedFile image) {
+
+
+        ArrayList<Proposition> propositions = getCachedPropositions(context);
+        proposition.setImage(image.fileName());
+        propositions.add(proposition);
+
+        try {
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionSerializer());
+            Gson gson = gsonBuilder.create();
+
+            Type collectionType = new TypeToken<ArrayList<Proposition>>() {
+            }.getType();
+
+            String data = gson.toJson(propositions, collectionType);
+
+            FileOutputStream out = context.openFileOutput("Propositions.json", Context.MODE_PRIVATE);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out);
+
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+
+    public static ArrayList<Proposition> getCachedPropositions(Context context) {
+
+        ArrayList<Proposition> propositions = new ArrayList<>();
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionDeserializer());
+        Gson gson = gsonBuilder.create();
+
+        Type collectionType = new TypeToken<ArrayList<Proposition>>() {
+        }.getType();
+
+        String json;
+
+        try {
+            InputStream inputStream = context.openFileInput("Propositions.json");
+
+            if (inputStream != null) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString;
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ((receiveString = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                json = stringBuilder.toString();
+                propositions = gson.fromJson(json, collectionType);
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        return propositions;
+    }
 }
+
