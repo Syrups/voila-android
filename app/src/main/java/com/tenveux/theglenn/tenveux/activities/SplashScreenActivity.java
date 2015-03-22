@@ -68,6 +68,11 @@ public class SplashScreenActivity extends Activity {
 
         } else {
             Log.i("VOILA", "No valid Google Play Services APK found.");
+            if (user != null) {
+                goToMain(user);
+            } else {
+                goToHome();
+            }
         }
     }
 

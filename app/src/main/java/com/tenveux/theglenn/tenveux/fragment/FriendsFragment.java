@@ -52,38 +52,36 @@ public class FriendsFragment extends DialogFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ADAPT = "adapter";
 
-    // TODO: Rename and change types of parameters
+    private boolean mBounce;
 
     private FriendsArrayApdater adapter;
     private FrienSelectedListner mListener;
 
     TypedFile mImageFile;
-    List<User> users;
-    Proposition proposition = new Proposition();
-
-    boolean bounce;
+    List<User> mUsers;
+    Proposition mProposition = new Proposition();
 
 
     @InjectView(android.R.id.list)
     ListView mUsersList;
 
     @InjectViews({R.id.button_private, R.id.button_public})
-    List<Button> buttons;
+    List<Button> mButtons;
 
 
     // TODO: Rename and change types of parameters
     public static FriendsFragment newInstance(List<User> users, TypedFile image) {
         FriendsFragment fragment = new FriendsFragment();
-        fragment.users = users;
+        fragment.mUsers = users;
         fragment.mImageFile = image;
         return fragment;
     }
 
     public static FriendsFragment newInstance(List<User> users, Proposition p, boolean bounce) {
         FriendsFragment fragment = new FriendsFragment();
-        fragment.users = users;
-        fragment.proposition = p;
-        fragment.bounce = bounce;
+        fragment.mUsers = users;
+        fragment.mProposition = p;
+        fragment.mBounce = bounce;
         return fragment;
     }
 
@@ -133,7 +131,7 @@ public class FriendsFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_fragment_friends, null);
-        adapter = new FriendsArrayApdater(getActivity(), R.layout.list_item_friends, this.users);
+        adapter = new FriendsArrayApdater(getActivity(), R.layout.list_item_friends, this.mUsers);
         adapter.setSendMode(FriendsArrayApdater.SEND_MODE);
 
         ButterKnife.inject(this, v);
@@ -169,16 +167,16 @@ public class FriendsFragment extends DialogFragment {
 
         Boolean isPrivate = button.getId() == R.id.button_private;
 
-        buttons.get(0).setSelected(isPrivate);
-        buttons.get(1).setSelected(!isPrivate);
+        mButtons.get(0).setSelected(isPrivate);
+        mButtons.get(1).setSelected(!isPrivate);
 
-        buttons.get(0).setBackgroundResource(isPrivate ? R.drawable.button_selection_bg : R.drawable.button_selection_bg_transparent);
-        buttons.get(1).setBackgroundResource(!isPrivate ? R.drawable.button_selection_bg : R.drawable.button_selection_bg_transparent);
+        mButtons.get(0).setBackgroundResource(isPrivate ? R.drawable.button_selection_bg : R.drawable.button_selection_bg_transparent);
+        mButtons.get(1).setBackgroundResource(!isPrivate ? R.drawable.button_selection_bg : R.drawable.button_selection_bg_transparent);
 
-        ViewHelper.setAlpha(buttons.get(0), isPrivate ? 1 : .4f);
-        ViewHelper.setAlpha(buttons.get(1), isPrivate ? .4f : 1);
+        ViewHelper.setAlpha(mButtons.get(0), isPrivate ? 1 : .4f);
+        ViewHelper.setAlpha(mButtons.get(1), isPrivate ? .4f : 1);
 
-        proposition.setIsPrivate(isPrivate);
+        mProposition.setIsPrivate(isPrivate);
     }
 
     @OnClick(R.id.send_proposition_button)
@@ -197,44 +195,59 @@ public class FriendsFragment extends DialogFragment {
             // This tells us the item position we are looking at
             final int position = checkedItems.keyAt(i);
 
-            User user = users.get(position);
+            User user = mUsers.get(position);
             userIds.add(user);
         }
 
         User sessionUser = UserPreferences.getSessionUser();
-        proposition.setReceivers(userIds);
-        proposition.setSender(sessionUser);
+        mProposition.setReceivers(userIds);
+        mProposition.setSender(sessionUser);
 
         if (mImageFile != null) {
-            ApplicationController.offApi().sendImage(mImageFile, new Callback<JsonElement>() {
-                @Override
-                public void success(JsonElement jsonElement, Response response) {
-
-                    JsonObject json = jsonElement.getAsJsonObject();
-                    String image = json.get("filename").getAsString();
-
-                    proposition.setImage(image);
-
-                    servePropostion();
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    error.printStackTrace();
-                }
-            });
+            this.uploadImage(mImageFile);
         } else {
-            servePropostion();
+
+            if (mBounce) {
+                servePropostion(mProposition);
+            } else {
+                //TODO localized
+                Toast.makeText(getActivity(), "an error occured", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
+    void uploadImage(TypedFile imageFile) {
+        ApplicationController.offApi().sendImage(imageFile, new Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement jsonElement, Response response) {
 
-    void servePropostion() {
+                JsonObject json = jsonElement.getAsJsonObject();
+                String remoteURL = json.get("filename").getAsString();
+
+                mProposition.setImage(remoteURL);
+                mImageFile.file().delete();
+
+                servePropostion(mProposition);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                error.printStackTrace();
+                cacheProposition(mProposition);
+            }
+        });
+    }
+
+    void cacheProposition(Proposition proposition) {
+        Proposition.cacheProposition(this.getActivity().getApplicationContext(), proposition, mImageFile);
+    }
+
+
+    void servePropostion(Proposition proposition) {
         ApplicationController.propositionApi().sendPropostion(proposition, new Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
 
-                Log.d("SendProposition", jsonElement.toString());
                 switch (response.getStatus()) {
                     case 201:
                         FriendsFragment.this.dismiss();
@@ -249,7 +262,7 @@ public class FriendsFragment extends DialogFragment {
             @Override
             public void failure(RetrofitError error) {
 
-                Toast.makeText(getActivity(), "Erreur de connextion", Toast.LENGTH_LONG);
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
 
                 error.printStackTrace();
             }

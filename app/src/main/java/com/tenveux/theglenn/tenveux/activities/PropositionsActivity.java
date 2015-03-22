@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
@@ -24,6 +25,7 @@ import com.tenveux.theglenn.tenveux.models.Answer;
 import com.tenveux.theglenn.tenveux.models.Proposition;
 import com.tenveux.theglenn.tenveux.models.User;
 import com.tenveux.theglenn.tenveux.models.data.PropositionDeserializer;
+import com.tenveux.theglenn.tenveux.widget.PropositionAdapter;
 import com.tenveux.theglenn.tenveux.widget.PropositionPagerAdapter;
 
 import java.lang.reflect.Type;
@@ -46,8 +48,12 @@ public class PropositionsActivity extends ActionBarActivity {
     ViewPager mViewPager;
     PropositionPagerAdapter mPagerAdapter;
 
-    List<Object> mAnswersAndPropostion;
+    @InjectView(android.R.id.list)
+    ListView mCachedItemsListView;
+    PropositionAdapter mPropositionAdapter;
 
+    List<Object> mAnswersAndPropostion;
+    ArrayList<Proposition> mCachedPropositions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +64,6 @@ public class PropositionsActivity extends ActionBarActivity {
 
         this.getSupportActionBar().setDisplayShowTitleEnabled(false);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         User u = UserPreferences.getSessionUser();
 
@@ -78,7 +83,8 @@ public class PropositionsActivity extends ActionBarActivity {
                     JsonArray propositions = jsonObject.get("propositions").getAsJsonArray();
 
                     // Type listType = new TypeToken<List<Proposition>>() {}.getType();
-                    //mPropositons = new Gson().fromJson(propositions, listType);
+                    //Propositions propositions = new Gson().fromJson(propositions, listType);
+                    //mAnswersAndPropostion.addAll(propositions);
                     mAnswersAndPropostion = new ArrayList<>();
 
                     for (JsonElement p : propositions) {
@@ -108,6 +114,10 @@ public class PropositionsActivity extends ActionBarActivity {
                     error.printStackTrace();
                 }
             });
+
+        mCachedPropositions = Proposition.getCachedPropositions(this);
+        mPropositionAdapter = new PropositionAdapter(this, mCachedPropositions);
+        mCachedItemsListView.setAdapter(mPropositionAdapter);
     }
 
     @Override
@@ -164,5 +174,4 @@ public class PropositionsActivity extends ActionBarActivity {
             }
         }, 500);
     }
-
 }

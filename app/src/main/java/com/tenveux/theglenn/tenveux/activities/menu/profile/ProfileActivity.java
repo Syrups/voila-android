@@ -78,8 +78,9 @@ public class ProfileActivity extends ActionBarActivity {
             container.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
+        //TODO : revoir ce system
         viewPager.setOffscreenPageLimit(5);
-        viewPager.setPageMargin(15);
+        viewPager.setPageMargin(0);
         viewPager.setClipChildren(false);
 
 

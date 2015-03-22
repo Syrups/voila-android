@@ -187,9 +187,9 @@ public class PropositionFragment extends Fragment implements FriendsFragment.Fri
                 statusText.startAnimation(alphaAnimation);
                 //ViewHelper.setAlpha(fadingView, 0);
 
-            } /*else {
+            } else {
                 showFade(!isVisibleToUser);
-            }*/
+            }
         }
     }
 
