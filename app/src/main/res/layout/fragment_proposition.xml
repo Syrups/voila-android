@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tenveux.theglenn.tenveux.fragment.PropositionFragment">
+    tools:context="com.tenveux.app.fragment.PropositionFragment">
 
+    <ProgressBar
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
 
     <ImageView
         android:id="@android:id/background"
@@ -15,7 +20,6 @@
 
 
     <RelativeLayout
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true">
@@ -84,7 +88,7 @@
             android:visibility="gone" />
 
 
-        <com.tenveux.theglenn.tenveux.widget.VoilaSeekBar
+        <com.tenveux.app.widget.VoilaSeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

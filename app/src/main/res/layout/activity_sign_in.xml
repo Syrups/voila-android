@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/voila_dark_blue"
-    tools:context="com.tenveux.theglenn.tenveux.activities.home.SignIn">
+    tools:context="com.tenveux.app.activities.home.SignIn">
 
     <ImageView
         android:id="@+id/imageView"
@@ -77,7 +77,7 @@
         android:background="#77000000"
         android:visibility="gone">
 
-        <com.tenveux.theglenn.tenveux.widget.VoilaLoaderImageVIew
+        <com.tenveux.app.widget.VoilaLoaderImageVIew
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
