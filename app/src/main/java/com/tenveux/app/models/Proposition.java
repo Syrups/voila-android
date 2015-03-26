@@ -222,6 +222,7 @@ public class Proposition {
                 inputStream.close();
                 json = stringBuilder.toString();
                 propositions = gson.fromJson(json, collectionType);
+                Log.d("glenn", json);
             }
         } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());

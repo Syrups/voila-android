@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.media.ExifInterface;
 import android.view.View;
 
 import com.tenveux.app.models.Proposition;
@@ -234,4 +236,6 @@ public class Utils {
         }
         return isValid;
     }
+
+
 }

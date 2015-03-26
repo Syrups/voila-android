@@ -264,8 +264,13 @@ public class FriendsFragment extends DialogFragment {
         ApplicationController.media().sendImage(imageFile, new Callback<JsonElement>() {
             @Override
             public void success(JsonElement jsonElement, Response response) {
+                JsonObject json = jsonElement.getAsJsonObject();
+                String remoteURL = json.get("filename").getAsString();
 
+                mProposition.setImage(remoteURL);
+                mImageFile.file().delete();
 
+                servePropostion(mProposition);
             }
 
             @Override

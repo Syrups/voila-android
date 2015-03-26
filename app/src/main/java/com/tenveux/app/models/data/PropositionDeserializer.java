@@ -29,7 +29,7 @@ public class PropositionDeserializer implements JsonDeserializer<Proposition> {
             elPropositon.remove("sender");
         }
 
-        if (elOriginalProposition.isJsonObject()) {
+        if (elOriginalProposition != null && elOriginalProposition.isJsonObject()) {
 
             elPropositon.remove("originalProposition");
         }

@@ -117,10 +117,9 @@ public class MainActivity extends ActionBarActivity
 
             //MainActivity.this.photoToSend
             Bitmap toSend = BitmapFactory.decodeByteArray(data, 0, data.length);
+            Log.d("taken", toSend.getWidth() + " x " + toSend.getHeight());
 
             switchPreviewMode(true, toSend);
-
-            Log.d("taken", data.length + " / ");
         }
     };
 
@@ -221,6 +220,22 @@ public class MainActivity extends ActionBarActivity
                 switchCameraMode();
             }
         });
+
+
+        //From ext picture
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if (type.startsWith("image/")) {
+                try {
+                    handleSendImage(intent);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -244,6 +259,19 @@ public class MainActivity extends ActionBarActivity
                 }
         }
     }
+
+    void handleSendImage(Intent intent) throws FileNotFoundException {
+        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (imageUri != null) {
+            InputStream imageStream = getContentResolver().openInputStream(imageUri);
+
+            Bitmap b = BitmapFactory.decodeStream(imageStream);
+            Bitmap photoToSend = ExifUtils.rotateBitmap(this, imageUri, b);
+
+            switchPreviewMode(false, photoToSend);
+        }
+    }
+
 
     /**
      * Check if this device has a camera
@@ -486,7 +514,14 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void switchPreviewMode(boolean fromCamera, Bitmap photoToSend) {
-        this.mPhotoToSend = photoToSend;
+        float ratio = photoToSend.getWidth() / 350;
+
+        int width = (int) (photoToSend.getWidth() / ratio);
+        int height = (int) (photoToSend.getHeight() / ratio);
+
+        Log.d("taken", width + " XxX " + height);
+
+        this.mPhotoToSend = Bitmap.createScaledBitmap(photoToSend, width, height, true);
 
         captureButton.setSelected(true);
         captureButton.setClickable(false);
@@ -516,16 +551,19 @@ public class MainActivity extends ActionBarActivity
                 imageFileFolder.mkdir();
             }
 
+
             FileOutputStream fos = null;
             File imageFileName = new File(imageFileFolder, "img-" + System.currentTimeMillis() + ".jpg");
 
             try {
                 fos = new FileOutputStream(imageFileName);
                 //fos.write(byteArray);
+
                 mPhotoToSend.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                //mPhotoToSend = ExifUtils.exifBitmap(imageFileName.getName());
+                //mPhotoToSend.compress(Bitmap.CompressFormat.JPEG, 100, fos);
 
                 fos.flush();
-
 
                 showFriendsForFile(imageFileName);
 

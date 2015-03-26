@@ -13,7 +13,7 @@ import retrofit.mime.TypedFile;
  */
 public interface MediaController {
 
-    public static final String UPLOAD_URL = "images";
+    public static final String UPLOAD_URL = "/images";
 
     @Multipart
     @POST(UPLOAD_URL)

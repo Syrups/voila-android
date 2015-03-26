@@ -4,5 +4,6 @@
     <string name="opening_text">Servez sur un plateau vos \n photos à vos amis.\n Libre à eux de les accepter, \net de les reservir à leurs amis</string>
     <string name="error_not_email"> is not an email address</string>
     <string name="error_user_exist">User already exist</string>
+    <string name="error_fields">Veuillez remplir tout les champs</string>
 
 </resources>

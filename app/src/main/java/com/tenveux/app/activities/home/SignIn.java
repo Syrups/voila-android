@@ -89,7 +89,7 @@ public class SignIn extends ActionBarActivity {
 
     }
 
-    @OnClick(R.id.button)
+    @OnClick(R.id.sign_in_button)
     void submit() {
         mLoader.setVisibility(View.VISIBLE);
 
@@ -112,7 +112,7 @@ public class SignIn extends ActionBarActivity {
             }
         }
 
-        if (data.size() > fields.size()) {
+        if (data.size() >= fields.size()) {
             ApplicationController.userApi().createUser(data, new Callback<User>() {
 
                 @Override
@@ -139,6 +139,8 @@ public class SignIn extends ActionBarActivity {
                     }
                 }
             });
+        } else {
+            Toast.makeText(this, R.string.error_fields, Toast.LENGTH_SHORT).show();
         }
     }
 

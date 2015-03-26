@@ -26,7 +26,7 @@ public class SplashScreenActivity extends Activity {
      * Duration of wait *
      */
     private final int SPLASH_DISPLAY_LENGTH = 500;
-
+    private Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,16 @@ public class SplashScreenActivity extends Activity {
 
         setContentView(R.layout.activity_splash_screen);
         final User user = UserPreferences.getSessionUser();
+
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if (type.startsWith("image/")) {
+                extras = intent.getExtras();
+            }
+        }
 
         // Check device for Play Services APK. If check succeeds, proceed with
         //  GCM registration.
@@ -70,6 +80,10 @@ public class SplashScreenActivity extends Activity {
         ApplicationController.getInstance().setUserToken(user.getToken());
 
         Intent mainIntent = new Intent(this, MainActivity.class);
+
+        if (extras != null) {
+            mainIntent.putExtras(extras);
+        }
         this.startActivity(mainIntent);
         this.finish();
     }

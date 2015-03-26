@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/voila_dark_blue"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+
+    <ImageView
+
+        android:id="@android:id/icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_user_placeholder" />
+
+
+    <TextView
+        android:id="@android:id/text1"
+        fontPath="fonts/JosefinSansStd-Light.otf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="3"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="Glenn"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
+
+</LinearLayout>

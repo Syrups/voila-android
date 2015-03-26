@@ -10,6 +10,8 @@ public interface Api {
     public static final String MEDIA_URL = "http://tenveuxmedia.storage.googleapis.com/";
     public static final String BASE_URL = BASE + "/api/";
 
+    //"http://23.251.133.98:8080";
     //http://tenveux.herokuapp.com"
     //"http://10.0.3.2:5000";
+    //192.168.1.29
 }
