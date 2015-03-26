@@ -1,6 +1,7 @@
 package com.tenveux.app.network.apis;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.tenveux.app.models.Proposition;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public interface ApiPropositions {
     //Proposition functions
 
     @POST(API)
-    public void sendPropostion(@Body Proposition proposition, Callback<JsonElement> callback);
+    public void sendPropostion(@Body Proposition proposition, Callback<JsonObject> callback);
 
     @PUT(PROPOSITION_TAKE)
     public void takePropostion(@Path("id") String id, Callback<JsonElement> callback);

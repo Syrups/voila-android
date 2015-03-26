@@ -73,10 +73,6 @@ public class PropositionsActivity extends ActionBarActivity {
                 @Override
                 public void success(JsonObject jsonObject, Response response) {
 
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionDeserializer());
-                    Gson gson = gsonBuilder.create();
-
                     JsonArray answers = jsonObject.get("answers").getAsJsonArray();
                     JsonArray propositions = jsonObject.get("propositions").getAsJsonArray();
 
@@ -86,21 +82,17 @@ public class PropositionsActivity extends ActionBarActivity {
                     mAnswersAndPropostion = new ArrayList<>();
 
                     for (JsonElement p : propositions) {
-
                         try {
-                            Proposition prop = gson.fromJson(p.toString(), Proposition.class);
+                            Proposition prop = Proposition.fromGson(p);
                             mAnswersAndPropostion.add(prop);
                         } catch (JsonSyntaxException e) {
                             e.printStackTrace();
                         }
                     }
 
-
                     //TODO : answers
                     for (JsonElement a : answers) {
-
-
-                        Answer ans = gson.fromJson(a.toString(), Answer.class);
+                        Answer ans = Answer.fromJson(a);
                         mAnswersAndPropostion.add(ans);
                     }
 
@@ -117,7 +109,7 @@ public class PropositionsActivity extends ActionBarActivity {
                 }
             });
 
-        mCachedPropositions = Proposition.getCachedPropositions(this);
+        mCachedPropositions = Proposition.getCached(this);
         mPropositionAdapter = new PropositionAdapter(this, mCachedPropositions);
         mCachedItemsListView.setAdapter(mPropositionAdapter);
     }

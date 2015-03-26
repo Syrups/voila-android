@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nineoldandroids.view.ViewHelper;
@@ -25,6 +27,7 @@ import com.tenveux.app.UserPreferences;
 import com.tenveux.app.Utils;
 import com.tenveux.app.models.Proposition;
 import com.tenveux.app.models.User;
+import com.tenveux.app.models.data.PropositionDeserializer;
 import com.tenveux.app.network.MediaAPI;
 import com.tenveux.app.widget.FriendsArrayApdater;
 
@@ -227,7 +230,7 @@ public class FriendsFragment extends DialogFragment {
             this.uploadImage(mImageFile);
         } else {
             if (mBounce) {
-                servePropostion(mProposition);
+                serveProposition(mProposition);
             } else {
                 //TODO localized
                 Toast.makeText(getActivity(), "an error occured", Toast.LENGTH_LONG).show();
@@ -270,7 +273,7 @@ public class FriendsFragment extends DialogFragment {
                 mProposition.setImage(remoteURL);
                 mImageFile.file().delete();
 
-                servePropostion(mProposition);
+                serveProposition(mProposition);
             }
 
             @Override
@@ -282,30 +285,36 @@ public class FriendsFragment extends DialogFragment {
     }
 
     void cacheProposition(Proposition proposition) {
-        Proposition.cacheProposition(this.getActivity().getApplicationContext(), proposition, mImageFile);
+        Proposition.cache(this.getActivity().getApplicationContext(), proposition, mImageFile);
+    }
+
+    void cacheProposition(JsonElement jsonElement) {
+        Proposition.cache(this.getActivity().getApplicationContext(), Proposition.fromJson(jsonElement.getAsJsonObject()), mImageFile);
     }
 
 
-    void servePropostion(Proposition proposition) {
-        ApplicationController.propositionApi().sendPropostion(proposition, new Callback<JsonElement>() {
+    void serveProposition(final Proposition proposition) {
+        ApplicationController.propositionApi().sendPropostion(proposition, new Callback<JsonObject>() {
             @Override
-            public void success(JsonElement jsonElement, Response response) {
+            public void success(JsonObject jsonObject, Response response) {
 
                 switch (response.getStatus()) {
                     case 201:
                         FriendsFragment.this.dismiss();
-                        mListener.onPropositionSent(jsonElement);
+                        mListener.onPropositionSent(jsonObject);
+
+                        proposition.setSent(1);
+                        cacheProposition(jsonObject);
                         break;
                     case 500:
-
                         break;
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+                cacheProposition(proposition);
 
                 error.printStackTrace();
             }

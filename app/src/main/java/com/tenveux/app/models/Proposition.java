@@ -1,6 +1,7 @@
 
 package com.tenveux.app.models;
 
+import com.google.gson.JsonArray;
 import com.google.gson.annotations.Expose;
 
 import android.content.Context;
@@ -61,12 +62,12 @@ public class Proposition {
     @Expose
     private String image;
 
-
     @Expose
     private Boolean isPrivate;
 
     @Expose
     private Integer reproposedCount;
+
     @Expose
     private List<String> takers = new ArrayList<String>();
 
@@ -165,10 +166,10 @@ public class Proposition {
     }
 
 
-    public static void cacheProposition(Context context, Proposition proposition, TypedFile image) {
+    public static void cache(Context context, Proposition proposition, TypedFile image) {
 
 
-        ArrayList<Proposition> propositions = getCachedPropositions(context);
+        ArrayList<Proposition> propositions = getCached(context);
         proposition.setImage(image.fileName());
         propositions.add(proposition);
 
@@ -193,12 +194,12 @@ public class Proposition {
     }
 
 
-    public static ArrayList<Proposition> getCachedPropositions(Context context) {
+    public static ArrayList<Proposition> getCached(Context context) {
 
         ArrayList<Proposition> propositions = new ArrayList<>();
 
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionDeserializer());
+        //gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionDeserializer());
         Gson gson = gsonBuilder.create();
 
         Type collectionType = new TypeToken<ArrayList<Proposition>>() {
@@ -231,6 +232,40 @@ public class Proposition {
         }
 
         return propositions;
+    }
+
+    public static Proposition fromGson(JsonElement proposition) {
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionDeserializer());
+        Gson gson = gsonBuilder.create();
+
+        return gson.fromJson(proposition.toString(), Proposition.class);
+    }
+
+    public static Proposition fromJson(JsonObject proposition) {
+
+        Gson gson = new Gson();
+
+        return gson.fromJson(proposition.toString(), Proposition.class);
+    }
+
+    public static ArrayList<Proposition> propositionListFromJson(String json) {
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionDeserializer());
+        Gson gson = gsonBuilder.create();
+
+        Type collectionType = new TypeToken<ArrayList<Proposition>>() {
+        }.getType();
+
+        return gson.fromJson(json, collectionType);
+
+    }
+
+    public static ArrayList<Proposition> propositionListFromJson(JsonElement json) {
+
+        return propositionListFromJson(json.toString());
     }
 }
 
