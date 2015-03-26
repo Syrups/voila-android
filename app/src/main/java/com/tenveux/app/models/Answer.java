@@ -1,6 +1,11 @@
 package com.tenveux.app.models;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.Expose;
+import com.tenveux.app.models.data.PropositionDeserializer;
 
 /**
  * Created by theGlenn on 01/03/15.
@@ -63,4 +68,16 @@ public class Answer {
         return this.answer.equals("yes");
     }
 
+
+    public static Answer fromJson(String json) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Proposition.class, new PropositionDeserializer());
+        Gson gson = gsonBuilder.create();
+
+        return gson.fromJson(json, Answer.class);
+    }
+
+    public static Answer fromJson(JsonElement json) {
+        return fromJson(json.toString());
+    }
 }

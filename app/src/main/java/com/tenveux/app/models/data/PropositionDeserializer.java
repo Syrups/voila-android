@@ -19,37 +19,37 @@ public class PropositionDeserializer implements JsonDeserializer<Proposition> {
     public Proposition deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
 
-        JsonObject elPropositon = json.getAsJsonObject();
-        JsonElement elSender = elPropositon.get("sender");
-        JsonElement elOriginalProposition = elPropositon.get("originalProposition");
-        JsonArray elReceivers = elPropositon.get("receivers").getAsJsonArray();
-        JsonArray elTakers = elPropositon.get("takers").getAsJsonArray();
+        JsonObject elProposition = json.getAsJsonObject();
+        JsonElement elSender = elProposition.get("sender");
+        JsonElement elOriginalProposition = elProposition.get("originalProposition");
+        JsonArray elReceivers = elProposition.get("receivers").getAsJsonArray();
+        JsonArray elTakers = elProposition.get("takers").getAsJsonArray();
 
-        if (!elSender.isJsonObject()) {
-            elPropositon.remove("sender");
+        if (elSender != null && !elSender.isJsonObject()) {
+            elProposition.remove("sender");
         }
 
         if (elOriginalProposition != null && elOriginalProposition.isJsonObject()) {
 
-            elPropositon.remove("originalProposition");
+            elProposition.remove("originalProposition");
         }
 
 
         if (!elTakers.isJsonNull()) {
-            elPropositon.remove("takers");
+            elProposition.remove("takers");
             /*if (elTakers.getAsJsonArray().size() > 0) {
                 if (!elTakers.get(0).isJsonObject())
                     elPropositon.remove("takers");
             }*/
         }
 
-        if (!elReceivers.isJsonNull()) {
+        if (!elReceivers.isJsonNull() && elReceivers.size() > 0) {
             if (!elReceivers.get(0).isJsonObject()) {
-                elPropositon.remove("receivers");
+                elProposition.remove("receivers");
             }
         }
 
-        return new Gson().fromJson(elPropositon, Proposition.class);
+        return new Gson().fromJson(elProposition, Proposition.class);
 
     }
 }

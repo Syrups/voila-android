@@ -22,8 +22,10 @@ public class PropositionSerializer implements JsonSerializer<Proposition> {
         JsonObject result = (JsonObject) g.toJsonTree(proposition);
 
         result.addProperty("id", proposition.getId());
-        result.addProperty("sender", proposition.getSender().getId());
 
+        if (proposition.getSender() != null) {
+            result.addProperty("sender", proposition.getSender().getId());
+        }
 
         JsonArray jArray = new JsonArray();
 
